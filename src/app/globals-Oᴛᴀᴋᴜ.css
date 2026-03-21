@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+:root {
+  /* Modern Dark Theme */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #a3ffce;
+  /* Matrix Green to match the rain */
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #262626;
+  --muted-foreground: #a1a1a1;
+  --accent: #00b8a9;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #333333;
+  --input: #1a1a1a;
+  --ring: #a3ffce;
+  --card: #141414;
+  --card-foreground: #ededed;
+  --radius: 1.25rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --font-sans: var(--font-inter);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  min-height: 100vh;
+  color-scheme: dark;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-patrick-hand), var(--font-nunito), system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+a:hover {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-patrick-hand), var(--font-nunito), system-ui, sans-serif;
+}
+
+/* Custom scrollbar - Dark Mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+::selection {
+  background: rgba(255, 213, 79, 0.3);
+  color: var(--foreground);
+}
+
+/* Utility Overrides for Dark Mode Compatibility */
+.bg-black,
+.bg-gray-900 {
+  background-color: var(--card) !important;
+}
+
+.bg-gray-900\/50,
+.bg-gray-900\/60,
+.bg-gray-900\/70 {
+  background-color: rgba(20, 20, 20, 0.8) !important;
+}
+
+/* Text color overrides removed to allow tailwind utilities to work */
+.border-gray-700,
+.border-gray-600,
+.border-gray-500,
+.border-gray-700\/50,
+.border-gray-600\/50 {
+  border-color: var(--border) !important;
+}
+
+.shadow-hand {
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  /* Subtler shadow for dark mode */
+}
+
+.shadow-hand:hover {
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.7);
+}
+
+.scrollbar-invisible {
+  scrollbar-width: none;
+}
+
+.scrollbar-invisible::-webkit-scrollbar {
+  display: none;
+}
+
+.glass-card {
+  width: 100%;
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0px 30px 50px -12px rgba(50, 50, 93, 0.25), inset 0px 18px 26px -18px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+}
