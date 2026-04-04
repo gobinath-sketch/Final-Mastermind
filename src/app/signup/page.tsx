@@ -102,7 +102,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] px-4 overflow-hidden">
+    <div className="auth-theme-override relative min-h-[100dvh] px-4 overflow-hidden">
       <MatrixBackground />
       <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-sm flex-col justify-center gap-5 py-6">
         {/* Header */}

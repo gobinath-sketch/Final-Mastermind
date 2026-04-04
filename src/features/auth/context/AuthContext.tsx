@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (res.ok) {
         const data = await res.json();
         // Ensure id is present (Mongoose uses _id)
-        const userData = { ...data.user, id: data.user._id };
+        const finalId = data.user.id || data.user._id;
+        const userData = { ...data.user, id: finalId };
         setUser(userData);
       } else {
         setUser(null);
@@ -70,7 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!res.ok) {
         return { error: { message: data.error || 'Login failed' } };
       }
-      setUser({ ...data.user, id: data.user._id });
+      const finalId = data.user.id || data.user._id;
+      setUser({ ...data.user, id: finalId });
       router.push('/dashboard');
       return { error: null };
     } catch (error) {
@@ -89,7 +91,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!res.ok) {
         return { error: { message: data.error || 'Signup failed' } };
       }
-      setUser({ ...data.user, id: data.user._id });
+      const finalId = data.user.id || data.user._id;
+      setUser({ ...data.user, id: finalId });
       return { error: null };
     } catch (error) {
       return { error: { message: 'Network error' } };
@@ -117,7 +120,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!res.ok) {
         return { error: { message: data.error || 'Update failed' } };
       }
-      setUser({ ...data.user, id: data.user._id });
+      const finalId = data.user.id || data.user._id;
+      setUser({ ...data.user, id: finalId });
       return { error: null };
     } catch (error) {
       return { error: { message: 'Network error' } };

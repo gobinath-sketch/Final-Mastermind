@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-8 overflow-hidden">
+    <div className="auth-theme-override relative flex min-h-screen flex-col items-center justify-center px-4 py-8 overflow-hidden">
       <MatrixBackground />
       <div className="relative z-10 w-full max-w-sm space-y-8">
         <Card className="w-full">
