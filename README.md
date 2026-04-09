@@ -10,6 +10,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+[![Hugging Face](https://img.shields.io/badge/HuggingFace-Meta--Llama--3--8B-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 [![Gemini AI](https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 
 <br/>
@@ -55,7 +56,7 @@
 | 📈 **Market Dashboard** | Real-time stock quotes, charts, watchlist & portfolio via Finnhub + Alpha Vantage |
 | 📰 **News Feed** | Personalized tech/career news via NewsAPI |
 | 💰 **Expense Tracker** | Full income/expense management with financial snapshots |
-| 🤖 **AI Chatbot** | Persistent Gemini-powered assistant with conversation history |
+| 🤖 **Atlas AI Chatbot** | **Hugging Face Serverless Inference** · `meta-llama/Meta-Llama-3-8B-Instruct` · 9-language auto-detect · conversation history in MongoDB |
 | 🎯 **Daily Goals** | LocalStorage-persisted goal tracker for daily productivity |
 
 ---
@@ -97,7 +98,8 @@ graph TD
         U["Adzuna + JSearch"]
         V["Finnhub + Alpha Vantage"]
         W["NewsAPI"]
-        X["Gemini 2.0 Flash"]
+        X["HuggingFace\nmeta-llama/Meta-Llama-3-8B-Instruct\nAtlas AI Chatbot"]
+        X2["Google Gemini 2.0 Flash\nResume Builder"]
     end
 
     subgraph DB["🗄️ Data Layer"]
@@ -113,6 +115,7 @@ graph TD
     P --> V
     Q --> W
     R --> X
+    R --> X2
     API --> Y
     API --> Z
 ```
@@ -161,7 +164,7 @@ mastermind-app/
     │       ├── 📁 jobs/                # Job search & save endpoints
     │       ├── 📁 stocks/              # Stock market endpoints
     │       ├── 📁 news/                # News endpoints
-    │       ├── 📁 ai/                  # AI (Gemini) endpoints
+    │       ├── 📁 ai/                  # AI endpoints (HuggingFace chat + Gemini resume)
     │       ├── 📁 resumes/             # Resume CRUD
     │       └── 📁 user/                # User stats & transactions
     │
@@ -189,7 +192,7 @@ mastermind-app/
     │   ├── 📄 auth.ts                  # Auth helper utilities
     │   ├── 📄 models.ts                # Mongoose data models
     │   └── 📁 services/                # Service layer (API wrappers)
-    │       ├── ai-service.ts           # Gemini AI service
+    │       ├── ai-service.ts           # AI service (chat + resume client wrappers)
     │       ├── job-service.ts          # Jobs (Adzuna/JSearch)
     │       ├── news-service.ts         # News (NewsAPI)
     │       └── stock-service.ts        # Stocks (Finnhub/Alpha Vantage)
@@ -514,38 +517,70 @@ flowchart TD
 
 ---
 
-## 🤖 Module 6 — AI Assistant
+## 🤖 Module 6 — Atlas AI Chatbot
 
-**Routes:** `/dashboard/ai-chat` + Global Floating Chatbot
+**Routes:** `/dashboard/ai-chat` + Global Floating Chatbot (named **Atlas AI**)
+
+> **Powered by:** [Hugging Face Serverless Inference](https://huggingface.co/inference-api) · Model: `meta-llama/Meta-Llama-3-8B-Instruct` · Temperature: `0.6` · Max tokens: `800`
 
 ```mermaid
 flowchart TD
     subgraph ENTRY["Two Entry Points"]
-        FLOAT["💬 Global Floating Chatbot\ncomponents/Chatbot.tsx\nAvailable on every page\nMinimized bubble → Expanded panel"]
-        FULL["📱 Full-Page AI Chat\n/dashboard/ai-chat\nConversation history\nMulti-session support"]
+        FLOAT["💬 Global Floating Chatbot\ncomponents/Chatbot.tsx  —  Named: Atlas AI\nDraggable anywhere on screen\nMinimizable · Hidden on /dashboard/ai-chat"]
+        FULL["📱 Full-Page AI Chat\n/dashboard/ai-chat\nPersistent conversation history\nMulti-session per user"]
     end
 
-    ENTRY --> API[POST /api/ai/chat]
-    API --> GEMINI["🤖 Gemini 2.0 Flash\nSystem prompt:\nCareer & Finance AI Assistant\nContext-aware responses"]
+    ENTRY --> AUTH[Verify JWT cookie: auth_token]
+    AUTH --> LANG
 
-    GEMINI --> RESP
-
-    subgraph RESP["ChatResponse"]
-        MSG[message — AI reply]
-        SUGG[suggestions — quick replies]
-        ACTIONS[actions — type, label, data]
+    subgraph LANG["🌍 Auto Language Detection"]
+        direction LR
+        L1["English 🇬🇧"]
+        L2["Spanish 🇪🇸"]
+        L3["French 🇫🇷"]
+        L4["German 🇩🇪"]
+        L5["Hindi 🇮🇳"]
+        L6["Portuguese 🇧🇷"]
+        L7["Chinese 🇨🇳"]
+        L8["Japanese 🇯🇵"]
+        L9["Korean 🇰🇷"]
     end
 
-    RESP --> STORE[Store in MongoDB\nconversations collection]
+    LANG --> PROMPT["Build System Prompt\nLanguage-aware · Career & Finance context\nStrict JSON output format"]
 
-    subgraph CONVO["Conversation Document"]
-        CID[user_id]
-        CTITLE[title]
-        MSGS["messages[]\n• role: user | assistant\n• content: string\n• timestamp: Date"]
+    PROMPT --> HF["🤗 Hugging Face Serverless Inference\nEndpoint: router.huggingface.co/v1/chat/completions\nModel: meta-llama/Meta-Llama-3-8B-Instruct\nTemp: 0.6  |  Max tokens: 800"]
+
+    HF --> PARSE[Parse & Normalize JSON]
+
+    subgraph RESP["Structured Response"]
+        MSG["response — AI reply in user language"]
+        SUGG["suggestions — 2 focused bullet points ≤12 words each"]
+        ACTIONS["actions — max 1 navigate action with dashboard route"]
     end
 
-    STORE --> DISPLAY[Display in Chat UI]
+    PARSE --> RESP
+    RESP --> MONGO["Save to MongoDB\nconversations collection\nuser_id · messages[] · timestamps"]
+    MONGO --> UI["Render in Atlas AI UI\nSuggestion chips · Action buttons · Animated typing"]
+
+    HF -->|API Error| FB["Graceful fallback message\nin detected user language"]
 ```
+
+### Atlas AI — Technical Specification
+
+| Property | Detail |
+|----------|--------|
+| **Chatbot Name** | Atlas AI |
+| **API** | Hugging Face Serverless Inference |
+| **Endpoint** | `https://router.huggingface.co/v1/chat/completions` |
+| **Model** | `meta-llama/Meta-Llama-3-8B-Instruct` |
+| **Temperature** | `0.6` |
+| **Max Tokens** | `800` |
+| **Languages** | 9 auto-detected (Unicode + keyword matching + character range) |
+| **Auth** | JWT cookie `auth_token` verified server-side |
+| **Response Format** | Strict JSON `{ response, suggestions[], actions[] }` |
+| **Storage** | MongoDB `conversations` collection (per-user, persistent) |
+| **Fallback** | Error message returned in user's detected language |
+| **UI** | Draggable · Minimizable · Suggestion chips · Action buttons |
 
 ---
 
@@ -677,7 +712,7 @@ flowchart TD
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/ai/chat` | Gemini chat response |
+| `POST` | `/api/ai/chat` | **Atlas AI** chat — HuggingFace `meta-llama/Meta-Llama-3-8B-Instruct` |
 | `POST` | `/api/ai/resume/generate` | Generate full resume |
 | `POST` | `/api/ai/resume/improve` | Improve existing resume |
 | `POST` | `/api/ai/resume/analyze-match` | Job match score + gaps |
@@ -719,31 +754,40 @@ flowchart TD
 Create `.env.local` inside `mastermind-app/`:
 
 ```env
-# MongoDB
+# ── MongoDB ────────────────────────────────────────────────────────
 MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/mastermind
 
-# Supabase
+# ── Supabase ───────────────────────────────────────────────────────
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# AI — Google Gemini 2.0 Flash
+# ── Atlas AI Chatbot — Hugging Face Serverless Inference ───────────
+# Model used: meta-llama/Meta-Llama-3-8B-Instruct
+# Endpoint:   https://router.huggingface.co/v1/chat/completions
+HUGGINGFACE_API_KEY=your_huggingface_api_key
+# Also accepted as:
+# OPENROUTER_API_KEY=your_key  (legacy alias in code)
+# OPEN_ROUTER_API_KEY=your_key
+# NEXT_PUBLIC_OPENROUTER_API_KEY=your_key
+
+# ── Resume Builder AI — Google Gemini 2.0 Flash ────────────────────
 GEMINI_API_KEY=your_gemini_api_key
 
-# Stock Market
+# ── Stock Market ───────────────────────────────────────────────────
 NEXT_PUBLIC_FINNHUB_API_KEY=your_finnhub_key
 NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
 NEXT_PUBLIC_YAHOO_FINANCE_API_KEY=your_yahoo_rapidapi_key
 
-# Jobs
+# ── Jobs ───────────────────────────────────────────────────────────
 NEXT_PUBLIC_ADZUNA_APP_ID=your_adzuna_app_id
 NEXT_PUBLIC_ADZUNA_API_KEY=your_adzuna_api_key
 NEXT_PUBLIC_JSEARCH_API_KEY=your_jsearch_rapidapi_key
 
-# News
+# ── News ───────────────────────────────────────────────────────────
 NEWS_API_KEY=your_newsapi_key
 
-# Auth
+# ── Auth ───────────────────────────────────────────────────────────
 JWT_SECRET=your_strong_jwt_secret
 NEXTAUTH_SECRET=your_nextauth_secret
 NEXTAUTH_URL=http://localhost:3000
@@ -835,15 +879,16 @@ npm start
 
 ### External APIs & AI
 
-| Service | Purpose |
-|---------|---------|
-| **Gemini 2.0 Flash** | AI chatbot + resume generation |
-| **Finnhub** | Real-time stock quotes & news |
-| **Alpha Vantage** | Historical stock data |
-| **Yahoo Finance (RapidAPI)** | Company data & trends |
-| **Adzuna** | Live job listings |
-| **JSearch (RapidAPI)** | Real-time job search |
-| **NewsAPI** | Technology & career news |
+| Service | Model / Plan | Purpose |
+|---------|-------------|----------|
+| **Hugging Face Serverless Inference** | `meta-llama/Meta-Llama-3-8B-Instruct` | **Atlas AI Chatbot** — career & finance assistant, 9-language support |
+| **Google Gemini** | `gemini-2.0-flash` | Resume generation, ATS optimization, cover letter, job match analysis |
+| **Finnhub** | Free plan | Real-time stock quotes, company news & sentiment |
+| **Alpha Vantage** | Free (5 calls/min) | Historical OHLCV data, technical indicators |
+| **Yahoo Finance** | via RapidAPI | Company data, stock trends |
+| **Adzuna** | Free (limited) | Live job listings worldwide |
+| **JSearch** | via RapidAPI | Real-time job search, salary data |
+| **NewsAPI** | Free plan | Technology & career news headlines |
 
 ### Developer Tools
 
