@@ -34,7 +34,7 @@
 - [📈 Module 3 — Market Dashboard](#-module-3--market-dashboard)
 - [📰 Module 4 — News Feed](#-module-4--news-feed)
 - [💰 Module 5 — Expense Tracker](#-module-5--expense-tracker)
-- [🤖 Module 6 — AI Assistant](#-module-6--ai-assistant)
+- [🤖 Module 6 — Atlas AI Chatbot](#-module-6--atlas-ai-chatbot)
 - [🗄️ Database Architecture](#️-database-architecture)
 - [🔌 API Reference](#-api-reference)
 - [🧩 Component Architecture](#-component-architecture)
@@ -56,7 +56,7 @@
 | 📈 **Market Dashboard** | Real-time stock quotes, charts, watchlist & portfolio via Finnhub + Alpha Vantage |
 | 📰 **News Feed** | Personalized tech/career news via NewsAPI |
 | 💰 **Expense Tracker** | Full income/expense management with financial snapshots |
-| 🤖 **Atlas AI Chatbot** | **Hugging Face Serverless Inference** · `meta-llama/Meta-Llama-3-8B-Instruct` · 9-language auto-detect · conversation history in MongoDB |
+| 🤖 **Atlas AI Chatbot** | Hugging Face Serverless Inference · `meta-llama/Meta-Llama-3-8B-Instruct` · 9-language support |
 | 🎯 **Daily Goals** | LocalStorage-persisted goal tracker for daily productivity |
 
 ---
@@ -65,46 +65,46 @@
 
 ```mermaid
 graph TD
-    subgraph CLIENT["🖥️ Client Layer (Browser)"]
-        A["/login"] 
-        B["/signup"]
-        C["/dashboard"]
-        D["/dashboard/jobs"]
-        E["/dashboard/resume"]
-        F["/dashboard/market"]
-        G["/dashboard/news"]
-        H["/dashboard/expenses"]
-        I["/dashboard/ai-chat"]
+    subgraph CLIENT["Client Layer - Browser"]
+        A["slash login"]
+        B["slash signup"]
+        C["slash dashboard"]
+        D["slash dashboard slash jobs"]
+        E["slash dashboard slash resume"]
+        F["slash dashboard slash market"]
+        G["slash dashboard slash news"]
+        H["slash dashboard slash expenses"]
+        I["slash dashboard slash ai-chat"]
     end
 
-    subgraph NEXTJS["⚙️ Next.js 15 App Router"]
+    subgraph NEXTJS["Next.js 15 - App Router"]
         J["React 19 + RSC"]
         K["TailwindCSS v4"]
         L["Framer Motion"]
         M["AuthContext Provider"]
     end
 
-    subgraph API["🔌 Next.js API Routes"]
-        N["/api/auth/*"]
-        O["/api/jobs/*"]
-        P["/api/stocks/*"]
-        Q["/api/news/*"]
-        R["/api/ai/*"]
-        S["/api/user/*"]
+    subgraph API["Next.js API Routes"]
+        N["api/auth"]
+        O["api/jobs"]
+        P["api/stocks"]
+        Q["api/news"]
+        R["api/ai"]
+        S["api/user"]
     end
 
-    subgraph EXTERNAL["🌐 External APIs"]
+    subgraph EXTERNAL["External Services"]
         T["Supabase Auth"]
-        U["Adzuna + JSearch"]
+        U["Adzuna + JSearch APIs"]
         V["Finnhub + Alpha Vantage"]
         W["NewsAPI"]
-        X["HuggingFace\nmeta-llama/Meta-Llama-3-8B-Instruct\nAtlas AI Chatbot"]
-        X2["Google Gemini 2.0 Flash\nResume Builder"]
+        X["HuggingFace Serverless Inference\nmeta-llama/Meta-Llama-3-8B-Instruct\nAtlas AI Chatbot"]
+        X2["Google Gemini 2.0 Flash\nResume Builder AI"]
     end
 
-    subgraph DB["🗄️ Data Layer"]
-        Y["MongoDB Atlas\ndb: mastermind"]
-        Z["Supabase PostgreSQL\n+ Row Level Security"]
+    subgraph DB["Data Layer"]
+        Y["MongoDB Atlas\nDatabase: mastermind"]
+        Z["Supabase PostgreSQL\nRow Level Security"]
     end
 
     CLIENT --> NEXTJS
@@ -127,80 +127,80 @@ graph TD
 ```
 mastermind-app/
 │
-├── 📄 package.json                    # Dependencies & npm scripts
-├── 📄 next.config.ts                  # Next.js configuration
-├── 📄 tsconfig.json                   # TypeScript config
-├── 📄 supabase-schema.sql             # Full Supabase DB schema + RLS policies
-├── 📄 .env.local                      # Environment variables (not committed)
-├── 📄 .env.local.example              # Environment variable template
+├── package.json                       # Dependencies & npm scripts
+├── next.config.ts                     # Next.js configuration
+├── tsconfig.json                      # TypeScript config
+├── supabase-schema.sql                # Full Supabase DB schema + RLS
+├── .env.local                         # Environment variables (not committed)
+├── .env.local.example                 # Environment variable template
 │
-└── 📁 src/
+└── src/
     │
-    ├── 📄 middleware.ts                # Next.js route middleware
+    ├── middleware.ts                   # Next.js route middleware
     │
-    ├── 📁 app/                         # Next.js App Router
-    │   ├── 📄 layout.tsx               # Root layout (fonts, providers, chatbot)
-    │   ├── 📄 page.tsx                 # Root → redirects to /login or /dashboard
-    │   ├── 📄 globals.css              # Global styles + CSS variables
+    ├── app/                           # Next.js App Router (Pages)
+    │   ├── layout.tsx                 # Root layout (fonts, providers, chatbot)
+    │   ├── page.tsx                   # Root: redirects to /login or /dashboard
+    │   ├── globals.css                # Global styles + CSS design tokens
     │   │
-    │   ├── 📁 login/                   # /login
-    │   ├── 📁 signup/                  # /signup
-    │   ├── 📁 forgot-password/         # /forgot-password
-    │   ├── 📁 reset-password/          # /reset-password
+    │   ├── login/                     # /login  — Login page
+    │   ├── signup/                    # /signup — Sign-up page
+    │   ├── forgot-password/           # /forgot-password — Request reset
+    │   ├── reset-password/            # /reset-password — New password form
     │   │
-    │   ├── 📁 dashboard/               # Protected routes
-    │   │   ├── 📄 page.tsx             # Dashboard home
-    │   │   ├── 📁 jobs/                # Job Search
-    │   │   ├── 📁 resume/              # Resume Builder
-    │   │   ├── 📁 market/              # Stock Market
-    │   │   ├── 📁 news/                # News Feed
-    │   │   ├── 📁 expenses/            # Expense Tracker
-    │   │   ├── 📁 ai-chat/             # AI Chat
-    │   │   ├── 📁 profile/             # User Profile
-    │   │   └── 📁 settings/            # App Settings
+    │   ├── dashboard/                 # Protected dashboard routes
+    │   │   ├── page.tsx               # Dashboard home (command center)
+    │   │   ├── jobs/                  # /dashboard/jobs — Job Search
+    │   │   ├── resume/                # /dashboard/resume — Resume Builder
+    │   │   ├── market/                # /dashboard/market — Stock Market
+    │   │   ├── news/                  # /dashboard/news — News Feed
+    │   │   ├── expenses/              # /dashboard/expenses — Expense Tracker
+    │   │   ├── ai-chat/               # /dashboard/ai-chat — Full AI Chat
+    │   │   ├── profile/               # /dashboard/profile — User Profile
+    │   │   └── settings/              # /dashboard/settings — App Settings
     │   │
-    │   └── 📁 api/                     # Backend API Routes
-    │       ├── 📁 auth/                # Authentication endpoints
-    │       ├── 📁 jobs/                # Job search & save endpoints
-    │       ├── 📁 stocks/              # Stock market endpoints
-    │       ├── 📁 news/                # News endpoints
-    │       ├── 📁 ai/                  # AI endpoints (HuggingFace chat + Gemini resume)
-    │       ├── 📁 resumes/             # Resume CRUD
-    │       └── 📁 user/                # User stats & transactions
+    │   └── api/                       # Backend API Routes (serverless)
+    │       ├── auth/                  # login, register, logout, me, reset
+    │       ├── jobs/                  # search, save, saved, recommendations
+    │       ├── stocks/                # quote, quotes, chart, watchlist, movers
+    │       ├── news/                  # headlines, categories
+    │       ├── ai/                    # chat (HuggingFace) + resume (Gemini)
+    │       ├── resumes/               # CRUD for saved resumes
+    │       └── user/                  # stats, transactions
     │
-    ├── 📁 components/                  # Shared UI Components
-    │   ├── 📄 Chatbot.tsx              # Global floating AI chatbot
-    │   ├── 📄 ActionCard.tsx           # Reusable action card
-    │   ├── 📄 MatrixBackground.tsx     # Animated matrix background
-    │   ├── 📁 ui/                      # Radix UI primitives
+    ├── components/                    # Shared UI Components
+    │   ├── Chatbot.tsx                # Atlas AI — global floating chatbot
+    │   ├── ActionCard.tsx             # Reusable action card component
+    │   ├── MatrixBackground.tsx       # Animated matrix background effect
+    │   ├── ui/                        # Radix UI primitives
     │   │   ├── button.tsx
     │   │   ├── card.tsx
     │   │   ├── input.tsx
     │   │   ├── dialog.tsx
     │   │   ├── tabs.tsx
     │   │   └── toast.tsx
-    │   └── 📁 effects/
-    │       └── WaterTouchEffects.tsx   # Interactive ripple effect
+    │   └── effects/
+    │       └── WaterTouchEffects.tsx  # Interactive water ripple effect
     │
-    ├── 📁 features/                    # Feature-based modules
-    │   └── 📁 auth/
-    │       └── 📁 context/
-    │           └── AuthContext.tsx     # Global auth context & hooks
+    ├── features/                      # Feature modules
+    │   └── auth/
+    │       └── context/
+    │           └── AuthContext.tsx    # Global auth state (user, profile, signOut)
     │
-    ├── 📁 lib/                         # Core library / business logic
-    │   ├── 📄 db.ts                    # MongoDB connection (cached)
-    │   ├── 📄 auth.ts                  # Auth helper utilities
-    │   ├── 📄 models.ts                # Mongoose data models
-    │   └── 📁 services/                # Service layer (API wrappers)
-    │       ├── ai-service.ts           # AI service (chat + resume client wrappers)
-    │       ├── job-service.ts          # Jobs (Adzuna/JSearch)
-    │       ├── news-service.ts         # News (NewsAPI)
-    │       └── stock-service.ts        # Stocks (Finnhub/Alpha Vantage)
+    ├── lib/                           # Core business logic
+    │   ├── db.ts                      # MongoDB connection (cached singleton)
+    │   ├── auth.ts                    # JWT verify helpers
+    │   ├── models.ts                  # Mongoose schemas & models
+    │   └── services/                  # Client-side API service wrappers
+    │       ├── ai-service.ts          # Chat + resume AI client wrappers
+    │       ├── job-service.ts         # Job search & save (Adzuna/JSearch)
+    │       ├── news-service.ts        # News headlines (NewsAPI)
+    │       └── stock-service.ts       # Stocks, watchlist (Finnhub/AlphaVantage)
     │
-    └── 📁 shared/                      # Cross-cutting utilities
-        ├── 📁 database/types.ts        # Shared TypeScript types
-        ├── 📁 hooks/use-toast.ts       # Toast notification hook
-        └── 📁 utils/index.ts           # formatCurrency, formatRelativeTime
+    └── shared/                        # Cross-cutting utilities
+        ├── database/types.ts          # Shared TypeScript interfaces
+        ├── hooks/use-toast.ts         # Global toast notification hook
+        └── utils/index.ts             # formatCurrency, formatRelativeTime
 ```
 
 ---
@@ -209,39 +209,39 @@ mastermind-app/
 
 ```mermaid
 flowchart TD
-    START([🌐 User visits app]) --> ROOT[Root Page /]
-    ROOT --> AUTH_CHECK{Auth State?}
-    
-    AUTH_CHECK -->|Not logged in| LOGIN[/login page]
-    AUTH_CHECK -->|Logged in| DASH[/dashboard]
+    START(["User visits app"]) --> ROOT["Root Page"]
+    ROOT --> AUTH_CHECK{"Auth State?"}
 
-    LOGIN --> CREDS[Enter Email + Password]
-    CREDS --> API_LOGIN[POST /api/auth/login]
-    API_LOGIN --> MONGO_CHECK[Find user in MongoDB\nbcrypt.compare password]
-    MONGO_CHECK -->|Valid| SESSION[Create Supabase Session\nSet JWT Cookie]
-    MONGO_CHECK -->|Invalid| LOGIN_ERR[❌ Show error toast]
+    AUTH_CHECK -->|"Not logged in"| LOGIN["Login Page"]
+    AUTH_CHECK -->|"Logged in"| DASH["Dashboard Home"]
+
+    LOGIN --> CREDS["Enter Email and Password"]
+    CREDS --> API_LOGIN["POST api/auth/login"]
+    API_LOGIN --> MONGO_CHECK["Find user in MongoDB\nbcrypt.compare password"]
+    MONGO_CHECK -->|"Valid"| SESSION["Create Supabase Session\nSet JWT Cookie"]
+    MONGO_CHECK -->|"Invalid"| LOGIN_ERR["Show Error Toast"]
     SESSION --> DASH
 
-    LOGIN --> SIGNUP_LINK[New user? → /signup]
-    SIGNUP_LINK --> REGISTER[POST /api/auth/register]
-    REGISTER --> CREATE_USER[Create MongoDB User\nbcrypt hash password\nSupabase signUp]
+    LOGIN --> SIGNUP_LINK["New user - go to signup"]
+    SIGNUP_LINK --> REGISTER["POST api/auth/register"]
+    REGISTER --> CREATE_USER["Create MongoDB User\nbcrypt hash password\nSupabase signUp"]
     CREATE_USER --> SESSION
 
-    DASH --> PARALLEL[Promise.all — Parallel Data Loading]
-    PARALLEL --> J1[Saved Jobs]
-    PARALLEL --> J2[Resume Count]
-    PARALLEL --> J3[Watchlist Stocks]
-    PARALLEL --> J4[Transactions]
-    PARALLEL --> J5[Recommended Jobs]
-    PARALLEL --> J6[News Headlines]
+    DASH --> PARALLEL["Promise.all - Parallel Data Loading"]
+    PARALLEL --> J1["Saved Jobs"]
+    PARALLEL --> J2["Resume Count"]
+    PARALLEL --> J3["Watchlist Stocks"]
+    PARALLEL --> J4["Transactions"]
+    PARALLEL --> J5["Recommended Jobs"]
+    PARALLEL --> J6["News Headlines"]
 
-    DASH --> NAV{User Navigates To}
-    NAV -->|Jobs| MOD1[💼 /dashboard/jobs]
-    NAV -->|Resume| MOD2[📄 /dashboard/resume]
-    NAV -->|Market| MOD3[📈 /dashboard/market]
-    NAV -->|News| MOD4[📰 /dashboard/news]
-    NAV -->|Expenses| MOD5[💰 /dashboard/expenses]
-    NAV -->|AI Chat| MOD6[🤖 /dashboard/ai-chat]
+    DASH --> NAV{"User Navigates To"}
+    NAV -->|"Jobs"| MOD1["Job Search Module"]
+    NAV -->|"Resume"| MOD2["Resume Builder Module"]
+    NAV -->|"Market"| MOD3["Market Dashboard Module"]
+    NAV -->|"News"| MOD4["News Feed Module"]
+    NAV -->|"Expenses"| MOD5["Expense Tracker Module"]
+    NAV -->|"AI Chat"| MOD6["Atlas AI Chat Module"]
 ```
 
 ---
@@ -250,46 +250,46 @@ flowchart TD
 
 ```mermaid
 sequenceDiagram
-    participant U as 👤 User
-    participant C as ⚛️ Client
-    participant API as 🔌 API Route
-    participant MONGO as 🍃 MongoDB
-    participant SB as 🟢 Supabase
+    participant U as User
+    participant C as Client React
+    participant API as Next.js API
+    participant MONGO as MongoDB
+    participant SB as Supabase Auth
 
     Note over U,SB: REGISTRATION
-    U->>C: Fill signup form (name, email, password)
-    C->>API: POST /api/auth/register
-    API->>MONGO: Create User (bcrypt hash password)
-    API->>SB: supabase.auth.signUp(email, password)
+    U->>C: Fill signup form name + email + password
+    C->>API: POST api/auth/register
+    API->>MONGO: Create User document bcrypt hash password
+    API->>SB: supabase.auth.signUp email + password
     SB-->>API: session + user.id
-    API-->>C: { token, user }
-    C->>C: Store session → redirect /dashboard
+    API-->>C: token + user object
+    C->>C: Store session then redirect to dashboard
 
     Note over U,SB: LOGIN
     U->>C: Enter email + password
-    C->>API: POST /api/auth/login
+    C->>API: POST api/auth/login
     API->>MONGO: Find user by email
-    API->>API: bcrypt.compare(password, hash)
-    API->>SB: supabase.auth.signInWithPassword()
-    SB-->>API: JWT session
-    API-->>C: Set cookie → { user }
-    C->>C: redirect /dashboard
+    API->>API: bcrypt.compare password with hash
+    API->>SB: supabase.auth.signInWithPassword
+    SB-->>API: JWT session token
+    API-->>C: Set auth cookie + return user
+    C->>C: Redirect to dashboard
 
     Note over U,SB: PASSWORD RESET
-    U->>C: /forgot-password → enter email
-    C->>API: POST /api/auth/forgot-password
-    API->>MONGO: Generate reset_token + expiry (1hr)
-    API->>U: Send reset email with token link
-    U->>C: Click link → /reset-password?token=xxx
-    C->>API: POST /api/auth/reset-password
-    API->>MONGO: Validate token + expiry
-    API->>MONGO: bcrypt new password, clear token
-    API-->>C: redirect /login ✅
+    U->>C: Visit forgot-password, enter email
+    C->>API: POST api/auth/forgot-password
+    API->>MONGO: Generate reset_token + expiry 1 hour
+    API->>U: Send email with reset link + token
+    U->>C: Click link, visit reset-password page
+    C->>API: POST api/auth/reset-password with token
+    API->>MONGO: Validate token and expiry
+    API->>MONGO: bcrypt new password, clear token fields
+    API-->>C: Redirect to login page
 
     Note over U,SB: PROTECTED ROUTES
-    U->>C: Visit /dashboard/*
-    C->>C: useAuth() → check user state
-    C->>C: if !user → redirect /login
+    U->>C: Visit any dashboard page
+    C->>C: useAuth checks user state
+    C->>C: If no user, redirect to login
 ```
 
 ---
@@ -300,24 +300,24 @@ The main dashboard loads **all data in parallel** using `Promise.all()`:
 
 ```mermaid
 flowchart LR
-    MOUNT([Dashboard Mounts]) --> PA[Promise.all]
+    MOUNT(["Dashboard Mounts"]) --> PA["Promise.all"]
 
-    PA --> P1["jobService.getSavedJobs()\n→ /api/jobs/saved/:id"]
-    PA --> P2["fetch('/api/user/stats')\n→ resume count"]
-    PA --> P3["stockService.getWatchlist()\n→ /api/stocks/watchlist"]
-    PA --> P4["fetch('/api/user/transactions')\n→ income & expenses"]
-    PA --> P5["fetch('/api/jobs/recommendations')\n→ AI matched jobs"]
-    PA --> P6["newsService.getTopHeadlines()\n→ NewsAPI top 10"]
+    PA --> P1["jobService.getSavedJobs\napi/jobs/saved"]
+    PA --> P2["fetch api/user/stats\nresume count"]
+    PA --> P3["stockService.getWatchlist\napi/stocks/watchlist"]
+    PA --> P4["fetch api/user/transactions\nincome and expenses"]
+    PA --> P5["fetch api/jobs/recommendations\nAI matched jobs"]
+    PA --> P6["newsService.getTopHeadlines\nNewsAPI top 10"]
 
-    P1 & P2 & P3 & P4 & P5 & P6 --> STATE[Update State]
+    P1 & P2 & P3 & P4 & P5 & P6 --> STATE["Update State"]
 
-    STATE --> UI1["📊 Quick Stats\nSaved Jobs | Resumes | Watchlist | Net Flow"]
-    STATE --> UI2["🔥 Highlights\nRecommended Jobs | Headlines | Market Watch"]
-    STATE --> UI3["🃏 Feature Cards\nJobs | Resume | Stocks | News | Expenses | AI"]
-    STATE --> UI4["📝 Productivity\nDaily Goals | Financial Snapshot"]
+    STATE --> UI1["Quick Stats\nSaved Jobs - Resumes - Watchlist - Net Flow"]
+    STATE --> UI2["Highlights\nRecommended Jobs - Headlines - Market Watch"]
+    STATE --> UI3["Feature Cards\nJobs - Resume - Stocks - News - Expenses - AI"]
+    STATE --> UI4["Productivity\nDaily Goals - Financial Snapshot"]
 ```
 
-**Watchlist Fallback:** If watchlist is empty, auto-loads popular stocks: `AAPL, MSFT, GOOGL, AMZN, TSLA`
+> **Watchlist Fallback:** If watchlist is empty, auto-loads popular stocks: `AAPL, MSFT, GOOGL, AMZN, TSLA`
 
 ---
 
@@ -327,43 +327,43 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    SEARCH([User enters search + filters]) --> PARAMS
+    SEARCH(["User enters search and filters"]) --> PARAMS
 
     subgraph PARAMS["Search Parameters"]
         direction LR
-        Q[query] 
-        L[location]
-        R[remote: bool]
-        S[salary min/max]
-        T[job_type]
-        E[experience_level]
-        SK[skills array]
+        Q["query keyword"]
+        L["location"]
+        R["remote boolean"]
+        S["salary min and max"]
+        T["job type"]
+        E["experience level"]
+        SK["skills array"]
     end
 
-    PARAMS --> API[POST /api/jobs/search]
+    PARAMS --> API["POST api/jobs/search"]
 
-    API --> ADZUNA[🌍 Adzuna Jobs API\napp_id + api_key]
-    API --> JSEARCH[🔍 JSearch API\nvia RapidAPI]
+    API --> ADZUNA["Adzuna Jobs API\nApp ID + API Key"]
+    API --> JSEARCH["JSearch API\nvia RapidAPI"]
 
-    ADZUNA & JSEARCH --> NORMALIZE[Normalize → JobSnapshot]
-    
+    ADZUNA & JSEARCH --> NORMALIZE["Normalize to JobSnapshot"]
+
     subgraph SNAPSHOT["JobSnapshot Object"]
         direction LR
-        ID[id + title + company]
-        LOC[location + salary_range]
-        APPLY[apply_url + source]
-        SKILLS[skills array]
+        ID["id + title + company"]
+        LOC["location + salary range"]
+        APPLY["apply URL + source"]
+        SKILLS["skills array"]
     end
 
-    NORMALIZE --> RESULTS[Display Job Cards]
+    NORMALIZE --> RESULTS["Display Job Cards"]
 
-    RESULTS --> SAVE_BTN[💾 Save Job]
-    RESULTS --> APPLY_BTN[🔗 Apply External]
+    RESULTS --> SAVE_BTN["Save Job Button"]
+    RESULTS --> APPLY_BTN["Apply External Link"]
 
-    SAVE_BTN --> SAVE_API[POST /api/jobs/save\n→ MongoDB jobs collection]
-    SAVE_API --> STATUS["Status Tracking\nsaved → applied → interviewing\n→ offered → rejected"]
+    SAVE_BTN --> SAVE_API["POST api/jobs/save\nMongoDB jobs collection"]
+    SAVE_API --> STATUS["Status Tracking\nsaved - applied - interviewing\noffered - rejected"]
 
-    LOAD_REC[GET /api/jobs/recommendations\nAI skill-matched] --> RESULTS
+    LOAD_REC["GET api/jobs/recommendations\nskill-matched by AI"] --> RESULTS
 ```
 
 ---
@@ -374,37 +374,37 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    FORM([User fills Resume Form]) --> DATA
+    FORM(["User fills Resume Form"]) --> DATA
 
     subgraph DATA["Resume Input"]
-        PI[Personal Info\nname, email, phone, location]
-        EX[Experience\ntitle, company, duration, achievements]
-        ED[Education\ndegree, institution, year, GPA]
-        SK[Skills array]
-        TJ[Target Job optional]
+        PI["Personal Info\nname, email, phone, location"]
+        EX["Experience\ntitle, company, duration, achievements"]
+        ED["Education\ndegree, institution, year, GPA"]
+        SK["Skills array"]
+        TJ["Target Job optional"]
     end
 
-    DATA --> GEN_API[POST /api/ai/resume/generate]
-    GEN_API --> GEMINI["🤖 Gemini 2.0 Flash\nPrompt Engineering:\n• ATS optimization\n• Keyword injection\n• Achievement bullets\n• Format standards"]
+    DATA --> GEN_API["POST api/ai/resume/generate"]
+    GEN_API --> GEMINI["Google Gemini 2.0 Flash\nATS optimization\nKeyword injection\nAchievement bullets\nFormat standards"]
 
     GEMINI --> RESPONSE
 
     subgraph RESPONSE["ResumeGenerationResponse"]
-        MD[resume.markdown]
-        HTML[resume.html]
-        SUGG[suggestions array]
-        ATS[atsScore 0-100]
+        MD["resume.markdown"]
+        HTML["resume.html"]
+        SUGG["suggestions array"]
+        ATS["atsScore 0 to 100"]
     end
 
-    RESPONSE --> PREVIEW[👁️ HTML Preview]
-    RESPONSE --> SAVE[💾 POST /api/resumes\n→ MongoDB resumes]
-    RESPONSE --> PDF[📥 Download PDF\nhtml2canvas + jsPDF]
+    RESPONSE --> PREVIEW["HTML Preview"]
+    RESPONSE --> SAVE["POST api/resumes\nMongoDB resumes collection"]
+    RESPONSE --> PDF["Download PDF\nhtml2canvas + jsPDF"]
 
     subgraph AI_ACTIONS["Additional AI Actions"]
-        IMP[Improve Resume\n/api/ai/resume/improve]
-        MATCH[Analyze Job Match\n/api/ai/resume/analyze-match\n→ matchScore + strengths + gaps]
-        OPT[ATS Optimize\n/api/ai/resume/optimize-ats\n→ atsScore + changes]
-        COV[Cover Letter\n/api/ai/cover-letter/generate]
+        IMP["Improve Resume\napi/ai/resume/improve"]
+        MATCH["Analyze Job Match\napi/ai/resume/analyze-match\nmatchScore + strengths + gaps"]
+        OPT["ATS Optimize\napi/ai/resume/optimize-ats\natsScore + changes"]
+        COV["Cover Letter\napi/ai/cover-letter/generate"]
     end
 ```
 
@@ -416,35 +416,35 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    subgraph SOURCES["📡 Data Sources"]
+    subgraph SOURCES["Data Sources"]
         FH["Finnhub\nReal-time quotes\nCompany news\nSentiment data"]
-        AV["Alpha Vantage\nHistorical OHLCV\nTechnical indicators\n5 calls/min"]
-        YF["Yahoo Finance\nvia RapidAPI\nCompany data\nTrends"]
+        AV["Alpha Vantage\nHistorical OHLCV\nTechnical indicators\n5 calls per min"]
+        YF["Yahoo Finance via RapidAPI\nCompany profile data\nTrends"]
     end
 
     SOURCES --> ENDPOINTS
 
     subgraph ENDPOINTS["API Endpoints"]
-        Q1[GET /api/stocks/quote/:symbol]
-        Q2[POST /api/stocks/quotes\nbatch fetch]
-        C1[GET /api/stocks/chart/:symbol\n?timeframe=1D/1W/1M/3M/1Y/5Y]
-        S1[GET /api/stocks/search?q=]
-        M1[GET /api/stocks/movers/:type\ngainers / losers / most_active]
-        W1[GET/POST/DEL /api/stocks/watchlist]
+        Q1["GET api/stocks/quote/symbol"]
+        Q2["POST api/stocks/quotes - batch"]
+        C1["GET api/stocks/chart/symbol\ntimeframe 1D 1W 1M 3M 1Y 5Y"]
+        S1["GET api/stocks/search"]
+        M1["GET api/stocks/movers/type\ngainers or losers or most_active"]
+        W1["GET POST DELETE api/stocks/watchlist"]
     end
 
     ENDPOINTS --> UI
 
     subgraph UI["Market Dashboard UI"]
-        SEARCH_BAR[🔍 Search Stocks]
-        MOVERS[📊 Market Movers\nGainers · Losers · Most Active]
-        CHART[📈 Interactive Chart\nOHLCV · Timeframe Selector]
-        WATCHLIST[⭐ My Watchlist\nAdd / Remove stocks]
-        DETAIL[📋 Stock Details\nP/E · 52W Range · Dividend]
+        SEARCH_BAR["Search Stocks by symbol or name"]
+        MOVERS["Market Movers\nGainers - Losers - Most Active"]
+        CHART["Interactive Chart\nOHLCV data - Timeframe Selector"]
+        WATCHLIST["My Watchlist\nAdd and Remove stocks"]
+        DETAIL["Stock Details\nPE ratio - 52W Range - Dividend"]
     end
 ```
 
-**StockQuote Object:** `symbol · name · price · change · changePercent · volume · marketCap · pe · high52Week · low52Week · dividend`
+**StockQuote fields:** `symbol · name · price · change · changePercent · volume · marketCap · pe · high52Week · low52Week · dividend`
 
 ---
 
@@ -454,24 +454,24 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    USER([User visits /dashboard/news]) --> API[GET /api/news]
-    API --> NEWSAPI["📰 NewsAPI\nKey: 3f228b...\nEndpoints:\n• top-headlines\n• category filter\n• pageSize: 10-30"]
+    USER(["User visits news page"]) --> API["GET api/news"]
+    API --> NEWSAPI["NewsAPI\nEndpoints: top-headlines\nCategory filter\nPageSize 10 to 30"]
 
     NEWSAPI --> ARTICLE
 
     subgraph ARTICLE["NewsArticle Object"]
-        T[title]
-        D[description]
-        URL[url — external link]
-        SRC[source.name]
-        PUB[publishedAt]
-        IMG[urlToImage]
+        T["title"]
+        D["description"]
+        URL["url - external link"]
+        SRC["source name"]
+        PUB["publishedAt timestamp"]
+        IMG["urlToImage"]
     end
 
-    ARTICLE --> CATS[Category Tabs\nAll · Tech · Finance · Science]
-    CATS --> CARDS[Article Cards\nThumbnail · Title · Source · Time\nRead More →]
+    ARTICLE --> CATS["Category Tabs\nAll - Tech - Finance - Science"]
+    CATS --> CARDS["Article Cards\nThumbnail + Title + Source + Time\nRead More link"]
 
-    NOTE[Also used on Dashboard home\ngetTopHeadlines category:technology pageSize:10]
+    NOTE["Also loads on Dashboard\ngetTopHeadlines category technology pageSize 10"]
 ```
 
 ---
@@ -482,36 +482,36 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    subgraph MODEL["Transaction Data Model"]
+    subgraph MODEL["Transaction Data Model - MongoDB"]
         direction LR
-        UID[user_id → User ref]
-        AMT["amount\n+ positive = income\n− negative = expense"]
-        CUR[currency default USD]
-        CAT[category string]
-        MERCH[merchant string]
-        META[metadata JSON]
+        UID["user_id reference to User"]
+        AMT["amount\npositive = income\nnegative = expense"]
+        CUR["currency default USD"]
+        CAT["category string"]
+        MERCH["merchant string"]
+        META["metadata flexible JSON"]
     end
 
     MODEL --> API_ROUTES
 
     subgraph API_ROUTES["API Endpoints"]
-        GET_TX[GET /api/user/transactions\nAll user transactions]
-        POST_TX[POST /api/user/transactions\nAdd new entry]
-        DEL_TX[DELETE /api/user/transactions\nRemove entry]
+        GET_TX["GET api/user/transactions\nFetch all user transactions"]
+        POST_TX["POST api/user/transactions\nAdd new transaction"]
+        DEL_TX["DELETE api/user/transactions\nRemove transaction"]
     end
 
     API_ROUTES --> UI
 
     subgraph UI["Expense Tracker UI"]
-        CARDS["💚 Total Income  |  ❤️ Total Expenses  |  💛 Net Flow"]
-        FORM[Add Transaction Form\nAmount · Category · Merchant · Date\nIncome / Expense toggle]
-        HISTORY[Transaction History\nSorted by date · Delete per row]
+        CARDS["Total Income - Total Expenses - Net Flow"]
+        FORM["Add Transaction Form\nAmount + Category + Merchant + Date\nIncome or Expense toggle"]
+        HISTORY["Transaction History\nSorted by date - Delete per row"]
     end
 
-    subgraph CALC["Dashboard Financial Snapshot"]
-        INC["incomeTotal = Σ amount where amount ≥ 0"]
-        EXP["expensesTotal = Σ |amount| where amount < 0"]
-        NET["netFlow = incomeTotal − expensesTotal"]
+    subgraph CALC["Financial Snapshot Calculation"]
+        INC["incomeTotal = sum of amount where amount >= 0"]
+        EXP["expensesTotal = sum of abs amount where amount < 0"]
+        NET["netFlow = incomeTotal minus expensesTotal"]
     end
 ```
 
@@ -526,43 +526,44 @@ flowchart TD
 ```mermaid
 flowchart TD
     subgraph ENTRY["Two Entry Points"]
-        FLOAT["💬 Global Floating Chatbot\ncomponents/Chatbot.tsx  —  Named: Atlas AI\nDraggable anywhere on screen\nMinimizable · Hidden on /dashboard/ai-chat"]
-        FULL["📱 Full-Page AI Chat\n/dashboard/ai-chat\nPersistent conversation history\nMulti-session per user"]
+        FLOAT["Global Floating Chatbot\ncomponents/Chatbot.tsx\nNamed: Atlas AI\nDraggable anywhere on screen\nMinimizable - Hidden on ai-chat page"]
+        FULL["Full-Page AI Chat\ndashboard/ai-chat\nPersistent conversation history\nMulti-session per user"]
     end
 
-    ENTRY --> AUTH[Verify JWT cookie: auth_token]
-    AUTH --> LANG
+    ENTRY --> AUTH["Verify JWT cookie auth_token"]
+    AUTH --> LANG["Auto Language Detection\n9 languages supported"]
 
-    subgraph LANG["🌍 Auto Language Detection"]
+    subgraph LANGS["Detected Languages"]
         direction LR
-        L1["English 🇬🇧"]
-        L2["Spanish 🇪🇸"]
-        L3["French 🇫🇷"]
-        L4["German 🇩🇪"]
-        L5["Hindi 🇮🇳"]
-        L6["Portuguese 🇧🇷"]
-        L7["Chinese 🇨🇳"]
-        L8["Japanese 🇯🇵"]
-        L9["Korean 🇰🇷"]
+        L1["English"]
+        L2["Spanish"]
+        L3["French"]
+        L4["German"]
+        L5["Hindi"]
+        L6["Portuguese"]
+        L7["Chinese"]
+        L8["Japanese"]
+        L9["Korean"]
     end
 
-    LANG --> PROMPT["Build System Prompt\nLanguage-aware · Career & Finance context\nStrict JSON output format"]
+    LANG --> LANGS
+    LANGS --> PROMPT["Build System Prompt\nLanguage-aware context\nCareer and Finance focus\nStrict JSON output format"]
 
-    PROMPT --> HF["🤗 Hugging Face Serverless Inference\nEndpoint: router.huggingface.co/v1/chat/completions\nModel: meta-llama/Meta-Llama-3-8B-Instruct\nTemp: 0.6  |  Max tokens: 800"]
+    PROMPT --> HF["Hugging Face Serverless Inference\nEndpoint: router.huggingface.co/v1/chat/completions\nModel: meta-llama/Meta-Llama-3-8B-Instruct\nTemperature: 0.6  Max tokens: 800"]
 
-    HF --> PARSE[Parse & Normalize JSON]
+    HF --> PARSE["Parse and Normalize JSON Response"]
 
     subgraph RESP["Structured Response"]
-        MSG["response — AI reply in user language"]
-        SUGG["suggestions — 2 focused bullet points ≤12 words each"]
-        ACTIONS["actions — max 1 navigate action with dashboard route"]
+        MSG["response - AI reply in user language"]
+        SUGG["suggestions - 2 bullet points max 12 words each"]
+        ACTIONS["actions - max 1 navigate action with route"]
     end
 
     PARSE --> RESP
-    RESP --> MONGO["Save to MongoDB\nconversations collection\nuser_id · messages[] · timestamps"]
-    MONGO --> UI["Render in Atlas AI UI\nSuggestion chips · Action buttons · Animated typing"]
+    RESP --> MONGO["Save to MongoDB\nconversations collection\nuser_id + messages array + timestamps"]
+    MONGO --> UI["Render in Atlas AI UI\nSuggestion chips - Action buttons - Animated typing"]
 
-    HF -->|API Error| FB["Graceful fallback message\nin detected user language"]
+    HF -->|"API Error"| FB["Graceful fallback message\nreturned in user detected language"]
 ```
 
 ### Atlas AI — Technical Specification
@@ -570,17 +571,17 @@ flowchart TD
 | Property | Detail |
 |----------|--------|
 | **Chatbot Name** | Atlas AI |
-| **API** | Hugging Face Serverless Inference |
-| **Endpoint** | `https://router.huggingface.co/v1/chat/completions` |
+| **API Provider** | Hugging Face Serverless Inference |
+| **API Endpoint** | `https://router.huggingface.co/v1/chat/completions` |
 | **Model** | `meta-llama/Meta-Llama-3-8B-Instruct` |
 | **Temperature** | `0.6` |
 | **Max Tokens** | `800` |
-| **Languages** | 9 auto-detected (Unicode + keyword matching + character range) |
-| **Auth** | JWT cookie `auth_token` verified server-side |
-| **Response Format** | Strict JSON `{ response, suggestions[], actions[] }` |
-| **Storage** | MongoDB `conversations` collection (per-user, persistent) |
+| **Languages** | 9 — auto-detected via Unicode ranges + keyword matching |
+| **Auth** | JWT cookie `auth_token` verified server-side on every request |
+| **Response Format** | Strict JSON: `{ response, suggestions[], actions[] }` |
+| **Storage** | MongoDB `conversations` collection — persistent per user |
 | **Fallback** | Error message returned in user's detected language |
-| **UI** | Draggable · Minimizable · Suggestion chips · Action buttons |
+| **UI Features** | Draggable · Minimizable · Suggestion chips · Action buttons |
 
 ---
 
@@ -591,7 +592,7 @@ flowchart TD
 ```mermaid
 erDiagram
     USERS {
-        ObjectId _id PK
+        ObjectId id PK
         String email UK
         String password_hash
         String full_name
@@ -605,7 +606,7 @@ erDiagram
     }
 
     RESUMES {
-        ObjectId _id PK
+        ObjectId id PK
         ObjectId user_id FK
         String title
         Mixed content
@@ -614,7 +615,7 @@ erDiagram
     }
 
     JOBS {
-        ObjectId _id PK
+        ObjectId id PK
         ObjectId user_id FK
         String job_id UK
         String source
@@ -624,7 +625,7 @@ erDiagram
     }
 
     WATCHLISTS {
-        ObjectId _id PK
+        ObjectId id PK
         ObjectId user_id FK
         String symbol
         String name
@@ -632,7 +633,7 @@ erDiagram
     }
 
     TRANSACTIONS {
-        ObjectId _id PK
+        ObjectId id PK
         ObjectId user_id FK
         Number amount
         String currency
@@ -642,7 +643,7 @@ erDiagram
     }
 
     CONVERSATIONS {
-        ObjectId _id PK
+        ObjectId id PK
         ObjectId user_id FK
         String title
         Array messages
@@ -655,20 +656,20 @@ erDiagram
     USERS ||--o{ CONVERSATIONS : "has many"
 ```
 
-### Supabase PostgreSQL — Auth + Mirror with RLS
+### Supabase PostgreSQL — Auth + RLS Mirror
 
 ```mermaid
 flowchart TD
-    AUTH["auth.users\nManaged by Supabase"] --> PROFILE["public.profiles\nUUID PK → auth.users\nfull_name · email · skills · preferences"]
-    PROFILE --> RES["public.resumes\nUUID · user_id FK\ntitle · content_markdown · version · is_active"]
-    PROFILE --> JOBS["public.jobs_saved\nUUID · user_id FK · job_id\nUNIQUE(user_id, job_id, source)"]
-    PROFILE --> WATCH["public.watchlists\nUUID · user_id FK · symbol\nUNIQUE(user_id, symbol)"]
-    PROFILE --> TXN["public.transactions\nUUID · user_id FK\namount DECIMAL · category · merchant"]
-    PROFILE --> CONV["public.conversations\nUUID · user_id FK\nmessages JSONB"]
+    AUTH["auth.users\nManaged by Supabase Auth"] --> PROFILE["public.profiles\nUUID PK linked to auth.users\nfull_name + email + skills + preferences"]
+    PROFILE --> RES["public.resumes\nUUID + user_id FK\ntitle + content_markdown + version + is_active"]
+    PROFILE --> JOBS["public.jobs_saved\nUUID + user_id FK + job_id\nUNIQUE user_id + job_id + source"]
+    PROFILE --> WATCH["public.watchlists\nUUID + user_id FK + symbol\nUNIQUE user_id + symbol"]
+    PROFILE --> TXN["public.transactions\nUUID + user_id FK\namount DECIMAL + category + merchant"]
+    PROFILE --> CONV["public.conversations\nUUID + user_id FK\nmessages JSONB array"]
 
-    RLS["🔒 Row Level Security ON\nall tables\nauth.uid() = user_id\nSELECT/INSERT/UPDATE/DELETE policies"] --> PROFILE & RES & JOBS & WATCH & TXN & CONV
+    RLS["Row Level Security ON all tables\nauth.uid equals user_id\nSELECT INSERT UPDATE DELETE policies"] --> PROFILE & RES & JOBS & WATCH & TXN & CONV
 
-    TRIGGER["⚡ Triggers\n• on_auth_user_created → auto-create profile\n• update_profiles_updated_at → auto timestamp"] --> PROFILE
+    TRIGGER["Triggers\non_auth_user_created: auto-create profile\nupdate_profiles_updated_at: auto timestamp"] --> PROFILE
 ```
 
 ---
@@ -691,7 +692,7 @@ flowchart TD
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/api/jobs/search` | Search live jobs |
-| `GET` | `/api/jobs/recommendations` | AI-matched job list |
+| `GET` | `/api/jobs/recommendations` | AI skill-matched job list |
 | `GET` | `/api/jobs/saved/:userId` | Get saved jobs |
 | `POST` | `/api/jobs/save` | Save a job |
 | `DELETE` | `/api/jobs/saved/:userId/:source/:jobId` | Remove saved job |
@@ -703,7 +704,7 @@ flowchart TD
 | `GET` | `/api/stocks/quote/:symbol` | Single stock quote |
 | `POST` | `/api/stocks/quotes` | Batch quotes `{ symbols[] }` |
 | `GET` | `/api/stocks/chart/:symbol?timeframe=` | OHLCV chart data |
-| `GET` | `/api/stocks/search?q=` | Search by name/symbol |
+| `GET` | `/api/stocks/search?q=` | Search by name or symbol |
 | `GET` | `/api/stocks/movers/:type` | gainers / losers / most_active |
 | `GET` | `/api/stocks/news/:symbol` | Stock-specific news |
 | `GET/POST/DELETE` | `/api/stocks/watchlist` | Manage watchlist |
@@ -712,18 +713,18 @@ flowchart TD
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/ai/chat` | **Atlas AI** chat — HuggingFace `meta-llama/Meta-Llama-3-8B-Instruct` |
-| `POST` | `/api/ai/resume/generate` | Generate full resume |
+| `POST` | `/api/ai/chat` | **Atlas AI** — HuggingFace `meta-llama/Meta-Llama-3-8B-Instruct` |
+| `POST` | `/api/ai/resume/generate` | Generate resume — **Gemini 2.0 Flash** |
 | `POST` | `/api/ai/resume/improve` | Improve existing resume |
 | `POST` | `/api/ai/resume/analyze-match` | Job match score + gaps |
-| `POST` | `/api/ai/resume/optimize-ats` | ATS optimization |
+| `POST` | `/api/ai/resume/optimize-ats` | ATS optimization + score |
 | `POST` | `/api/ai/cover-letter/generate` | Generate cover letter |
 
 ### User
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/user/stats` | Summary counts (resumes, etc.) |
+| `GET` | `/api/user/stats` | Summary counts — resumes, jobs |
 | `GET` | `/api/user/transactions` | All transactions |
 | `POST` | `/api/user/transactions` | Add transaction |
 
@@ -733,18 +734,18 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    ROOT["RootLayout layout.tsx\nInter + Nunito + Patrick Hand fonts"]
+    ROOT["RootLayout - layout.tsx\nGoogle Fonts: Inter + Nunito + Patrick Hand"]
 
-    ROOT --> AUTH_PROV["AuthProvider\nfeatures/auth/context/AuthContext.tsx\n• user state\n• profile state\n• loading state\n• signOut()"]
-    ROOT --> CHATBOT["Chatbot.tsx\nGlobal floating AI assistant\n• Minimized: bottom-right bubble\n• Expanded: slide-up chat panel\n• POST /api/ai/chat on submit"]
+    ROOT --> AUTH_PROV["AuthProvider\nfeatures/auth/context/AuthContext.tsx\nprovides: user, profile, loading, signOut"]
+    ROOT --> CHATBOT["Chatbot.tsx - Atlas AI\nGlobal floating AI assistant\nMinimized: bottom-right button\nExpanded: draggable chat panel\nCalls POST api/ai/chat on send"]
     ROOT --> TOASTER["Toaster\nGlobal toast notifications\nuse-toast hook"]
-    ROOT --> WATER["WaterTouchEffects.tsx\nInteractive ripple animation"]
+    ROOT --> WATER["WaterTouchEffects.tsx\nInteractive water ripple on click"]
 
-    AUTH_PROV --> PAGES["All Pages /login /signup /dashboard/*"]
-    
-    PAGES --> UI_PRIMS["UI Primitives components/ui/\nButton · Card · Input · Dialog\nDropdownMenu · Tabs · Toast · Tooltip"]
-    
-    SHARED["Shared Utilities\n• formatCurrency → $1,234.56\n• formatRelativeTime → 2 hours ago\n• use-toast hook"]
+    AUTH_PROV --> PAGES["All Pages: login - signup - dashboard routes"]
+
+    PAGES --> UI_PRIMS["UI Primitives - components/ui\nButton - Card - Input - Dialog\nDropdownMenu - Tabs - Toast - Tooltip"]
+
+    SHARED["Shared Utilities\nformatCurrency returns dollar string\nformatRelativeTime returns time ago string\nuse-toast hook for notifications"]
 ```
 
 ---
@@ -754,41 +755,41 @@ flowchart TD
 Create `.env.local` inside `mastermind-app/`:
 
 ```env
-# ── MongoDB ────────────────────────────────────────────────────────
+# ── MongoDB ────────────────────────────────────────────────────────────
 MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/mastermind
 
-# ── Supabase ───────────────────────────────────────────────────────
+# ── Supabase ───────────────────────────────────────────────────────────
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# ── Atlas AI Chatbot — Hugging Face Serverless Inference ───────────
-# Model used: meta-llama/Meta-Llama-3-8B-Instruct
-# Endpoint:   https://router.huggingface.co/v1/chat/completions
+# ── Atlas AI Chatbot — Hugging Face Serverless Inference ──────────────
+# Model:    meta-llama/Meta-Llama-3-8B-Instruct
+# Endpoint: https://router.huggingface.co/v1/chat/completions
 HUGGINGFACE_API_KEY=your_huggingface_api_key
-# Also accepted as:
-# OPENROUTER_API_KEY=your_key  (legacy alias in code)
+# Legacy aliases also accepted by the code:
+# OPENROUTER_API_KEY=your_key
 # OPEN_ROUTER_API_KEY=your_key
 # NEXT_PUBLIC_OPENROUTER_API_KEY=your_key
 
-# ── Resume Builder AI — Google Gemini 2.0 Flash ────────────────────
-GEMINI_API_KEY=your_gemini_api_key
+# ── Resume Builder AI — Google Gemini 2.0 Flash ───────────────────────
+GEMINI_API_KEY=your_gemini_2_flash_api_key
 
-# ── Stock Market ───────────────────────────────────────────────────
+# ── Stock Market APIs ─────────────────────────────────────────────────
 NEXT_PUBLIC_FINNHUB_API_KEY=your_finnhub_key
 NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
 NEXT_PUBLIC_YAHOO_FINANCE_API_KEY=your_yahoo_rapidapi_key
 
-# ── Jobs ───────────────────────────────────────────────────────────
+# ── Jobs APIs ─────────────────────────────────────────────────────────
 NEXT_PUBLIC_ADZUNA_APP_ID=your_adzuna_app_id
 NEXT_PUBLIC_ADZUNA_API_KEY=your_adzuna_api_key
 NEXT_PUBLIC_JSEARCH_API_KEY=your_jsearch_rapidapi_key
 
-# ── News ───────────────────────────────────────────────────────────
+# ── News API ──────────────────────────────────────────────────────────
 NEWS_API_KEY=your_newsapi_key
 
-# ── Auth ───────────────────────────────────────────────────────────
-JWT_SECRET=your_strong_jwt_secret
+# ── Auth ──────────────────────────────────────────────────────────────
+JWT_SECRET=your_strong_jwt_secret_min_32_chars
 NEXTAUTH_SECRET=your_nextauth_secret
 NEXTAUTH_URL=http://localhost:3000
 ```
@@ -807,6 +808,7 @@ NEXTAUTH_URL=http://localhost:3000
 | npm | 9.x or higher |
 | MongoDB Atlas | Free tier works |
 | Supabase account | Free tier works |
+| API Keys | See environment variables section |
 
 ### Installation
 
@@ -820,15 +822,15 @@ npm install
 
 # 3. Set up environment variables
 cp .env.local.example .env.local
-# Edit .env.local with your actual keys
+# Edit .env.local and fill in all your API keys
 
 # 4. Set up Supabase database
-# → Go to Supabase project → SQL Editor
-# → Paste and run: supabase-schema.sql
+# Go to Supabase Dashboard > SQL Editor
+# Paste and run the contents of: supabase-schema.sql
 
 # 5. Start the development server
 npm run dev
-# Opens at http://localhost:3000
+# App opens at http://localhost:3000
 ```
 
 ### Production Build
@@ -844,9 +846,9 @@ npm start
 |--------|-------------|
 | `npm run dev` | Start dev server (auto-opens browser) |
 | `npm run dev:base` | Start Next.js dev server only |
-| `npm run build` | Build for production |
+| `npm run build` | Build production bundle |
 | `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
+| `npm run lint` | Run ESLint checks |
 
 ---
 
@@ -856,48 +858,50 @@ npm start
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| **Next.js** | 15.x | Full-stack React framework (App Router) |
+| **Next.js** | 15.x | Full-stack framework with App Router |
 | **React** | 19.x | UI library |
-| **TypeScript** | 5.x | Type safety |
-| **TailwindCSS** | 4.x | Utility-first CSS |
-| **Framer Motion** | 12.x | Animations & transitions |
-| **Recharts** | 3.x | Stock charts & data visualization |
+| **TypeScript** | 5.x | Static type safety |
+| **TailwindCSS** | 4.x | Utility-first CSS framework |
+| **Framer Motion** | 12.x | Animations and transitions |
+| **Recharts** | 3.x | Stock charts and data visualization |
 | **Chart.js** | 4.x | Additional charting |
-| **Radix UI** | latest | Accessible UI primitives |
+| **Radix UI** | latest | Accessible headless UI primitives |
 | **Lucide React** | 0.544 | Icon library |
+| **Google Fonts** | — | Inter · Nunito · Patrick Hand |
 
 ### Backend
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| **Next.js API Routes** | 15.x | Serverless backend |
+| **Next.js API Routes** | 15.x | Serverless backend endpoints |
 | **MongoDB Atlas** | — | Primary data store |
-| **Mongoose** | 9.x | MongoDB ODM |
-| **Supabase** | latest | Auth + PostgreSQL mirror |
+| **Mongoose** | 9.x | MongoDB object document mapper |
+| **Supabase** | latest | Auth provider + PostgreSQL mirror |
 | **bcryptjs** | 3.x | Password hashing |
-| **jsonwebtoken** | 9.x | JWT auth tokens |
+| **jsonwebtoken** | 9.x | JWT generation and verification |
 
 ### External APIs & AI
 
 | Service | Model / Plan | Purpose |
-|---------|-------------|----------|
-| **Hugging Face Serverless Inference** | `meta-llama/Meta-Llama-3-8B-Instruct` | **Atlas AI Chatbot** — career & finance assistant, 9-language support |
-| **Google Gemini** | `gemini-2.0-flash` | Resume generation, ATS optimization, cover letter, job match analysis |
-| **Finnhub** | Free plan | Real-time stock quotes, company news & sentiment |
-| **Alpha Vantage** | Free (5 calls/min) | Historical OHLCV data, technical indicators |
-| **Yahoo Finance** | via RapidAPI | Company data, stock trends |
-| **Adzuna** | Free (limited) | Live job listings worldwide |
-| **JSearch** | via RapidAPI | Real-time job search, salary data |
-| **NewsAPI** | Free plan | Technology & career news headlines |
+|---------|-------------|---------|
+| **Hugging Face Serverless** | `meta-llama/Meta-Llama-3-8B-Instruct` | **Atlas AI Chatbot** — 9-language career & finance assistant |
+| **Google Gemini** | `gemini-2.0-flash` | Resume generation · ATS optimization · Cover letter · Job match |
+| **Finnhub** | Free plan | Real-time stock quotes · Company news · Sentiment |
+| **Alpha Vantage** | Free — 5 calls/min | Historical OHLCV data · Technical indicators |
+| **Yahoo Finance** | via RapidAPI | Company profiles · Stock trends |
+| **Adzuna** | Free — limited | Live job listings worldwide |
+| **JSearch** | via RapidAPI | Real-time job search · Salary data |
+| **NewsAPI** | Free plan | Technology and career news headlines |
 
 ### Developer Tools
 
 | Tool | Purpose |
 |------|---------|
-| **ESLint** | Code linting |
-| **html2canvas + jsPDF** | Client-side PDF export |
+| **ESLint** | Code quality linting |
+| **html2canvas** | DOM to image for PDF generation |
+| **jsPDF** | Client-side PDF export |
 | **date-fns** | Date formatting utilities |
-| **zod** | Schema validation |
+| **zod** | Runtime schema validation |
 | **react-hook-form** | Form state management |
 
 ---
