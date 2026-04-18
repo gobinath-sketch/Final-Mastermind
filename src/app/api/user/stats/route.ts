@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import { Job, Resume, Watchlist, Transaction, User } from '@/lib/models';
+import { Job, Resume, Watchlist, Transaction } from '@/lib/models';
 import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {

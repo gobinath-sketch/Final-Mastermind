@@ -23,6 +23,9 @@ const ResumeSchema = new Schema({
     user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
     content: { type: Schema.Types.Mixed }, // Flexible JSON content
+    content_markdown: { type: String },
+    version: { type: Number, default: 1 },
+    is_active: { type: Boolean, default: true },
     template: { type: String },
     is_public: { type: Boolean, default: false },
 }, { timestamps: true });

@@ -91,7 +91,14 @@ export default function DashboardPage() {
                         console.error('Error fetching saved jobs:', err)
                         return [] as JobSnapshot[]
                     }),
-                    fetch('/api/user/stats').then(res => res.json()).catch(() => ({ resumes: 0 })),
+                    fetch('/api/user/stats')
+                        .then(async (res) => {
+                            if (!res.ok) {
+                                return { savedJobs: 0, resumes: 0, watchlist: 0, transactions: 0 }
+                            }
+                            return res.json()
+                        })
+                        .catch(() => ({ savedJobs: 0, resumes: 0, watchlist: 0, transactions: 0 })),
                     stockService.getWatchlist().catch(err => {
                         console.error('Error fetching watchlist:', err)
                         return [] as WatchlistItem[]
@@ -114,13 +121,15 @@ export default function DashboardPage() {
 
                 if (!isMounted) return
 
-                const transactionData = Array.isArray(transactionsRes) ? transactionsRes : []
+                const transactionData = Array.isArray(transactionsRes)
+                    ? (transactionsRes as Array<{ amount: number }>)
+                    : ([] as Array<{ amount: number }>)
                 const incomeTotal = transactionData
-                    .filter((txn: any) => txn.amount >= 0)
-                    .reduce((acc: number, txn: any) => acc + txn.amount, 0)
+                    .filter((txn) => txn.amount >= 0)
+                    .reduce((acc: number, txn) => acc + txn.amount, 0)
                 const expensesTotal = transactionData
-                    .filter((txn: any) => txn.amount < 0) // expenses are stored as negative
-                    .reduce((acc: number, txn: any) => acc + Math.abs(txn.amount), 0)
+                    .filter((txn) => txn.amount < 0) // expenses are stored as negative
+                    .reduce((acc: number, txn) => acc + Math.abs(txn.amount), 0)
 
                 // Net flow is sum of all transactions (positive income + negative expenses)
                 const netFlow = incomeTotal - expensesTotal
@@ -134,11 +143,10 @@ export default function DashboardPage() {
                     net: netFlow,
                 })
 
-                // Fallback for Watchlist if empty: fetch popular stocks
-                if (watchlistData.length === 0) {
-                    try {
+                // Load watchlist quotes (live) for display
+                try {
+                    if (watchlistData.length === 0) {
                         const popularQuotes = await stockService.getMultipleQuotes(['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'])
-                        // map StockQuote to WatchlistItem shape for display
                         const fallbackWatchlist: WatchlistItem[] = popularQuotes.map(q => ({
                             symbol: q.symbol,
                             name: q.name,
@@ -148,11 +156,54 @@ export default function DashboardPage() {
                             addedAt: new Date().toISOString()
                         }))
                         setWatchlistQuotes(fallbackWatchlist)
-                    } catch (e) {
-                        console.error('Failed to load fallback stocks', e)
+                    } else {
+                        const symbols = watchlistData.map((i) => i.symbol)
+                        const quotes = await stockService.getMultipleQuotes(symbols)
+                        const quoteMap = new Map(quotes.map((q) => [q.symbol, q]))
+
+                        const mergedWatchlist: WatchlistItem[] = watchlistData.map((item) => {
+                            const q = quoteMap.get(item.symbol)
+                            const rawAddedAt = (
+                                item as unknown as {
+                                    addedAt?: string | Date
+                                    added_at?: string | Date
+                                    createdAt?: string | Date
+                                }
+                            ).addedAt ??
+                                (
+                                    item as unknown as {
+                                        addedAt?: string | Date
+                                        added_at?: string | Date
+                                        createdAt?: string | Date
+                                    }
+                                ).added_at ??
+                                (
+                                    item as unknown as {
+                                        addedAt?: string | Date
+                                        added_at?: string | Date
+                                        createdAt?: string | Date
+                                    }
+                                ).createdAt
+
+                            const itemName = (item as unknown as { name?: string }).name
+
+                            const addedAt = rawAddedAt ? new Date(rawAddedAt).toISOString() : new Date().toISOString()
+
+                            return {
+                                symbol: item.symbol,
+                                name: q?.name ?? itemName ?? item.symbol,
+                                price: q?.price ?? 0,
+                                change: q?.change ?? 0,
+                                changePercent: q?.changePercent ?? 0,
+                                addedAt,
+                            }
+                        })
+
+                        setWatchlistQuotes(mergedWatchlist)
                     }
-                } else {
-                    setWatchlistQuotes(watchlistData)
+                } catch (e) {
+                    console.error('Failed to load watchlist quotes', e)
+                    setWatchlistQuotes([])
                 }
 
                 setRecommendedJobs(recommendationsPayload.jobs ?? [])
@@ -372,7 +423,7 @@ export default function DashboardPage() {
                     <Card className="flex h-full flex-col bg-secondary/60 border-border shadow-sm">
                         <CardHeader>
                             <CardTitle>Recommended Jobs</CardTitle>
-                            <CardDescription>{recommendationsMessage || 'Curated opportunities'}</CardDescription>
+                            <CardDescription>{recommendationsMessage || 'Curated job opportunities for you'}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-1 flex flex-col min-h-0">
                             <div className="space-y-3 overflow-y-auto pr-2 h-[320px] custom-scrollbar">

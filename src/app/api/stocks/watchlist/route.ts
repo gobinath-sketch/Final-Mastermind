@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user's watchlist
-    const watchlist = await Watchlist.find({ user_id: userPayload.userId }).sort({ added_at: -1 });
+    const watchlist = await Watchlist.find({ user_id: userPayload.userId }).sort({ createdAt: -1 });
 
     return NextResponse.json(watchlist || []);
 
@@ -42,13 +42,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { userId, symbol } = body;
+    const { symbol, name, price_at_add } = body;
 
-    // Validate that the user can only add to their own watchlist
-    if (userId !== userPayload.userId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!symbol || typeof symbol !== 'string') {
+      return NextResponse.json({ error: 'Symbol is required' }, { status: 400 });
     }
 
+    const userId = userPayload.userId;
     const symbolUpper = symbol.toUpperCase();
 
     // Check for duplicate
@@ -61,10 +61,8 @@ export async function POST(request: NextRequest) {
     const newItem = await Watchlist.create({
       user_id: userId,
       symbol: symbolUpper,
-      meta: {
-        name: getCompanyName(symbolUpper),
-        added_at: new Date().toISOString()
-      }
+      name: typeof name === 'string' && name.trim().length > 0 ? name.trim() : getCompanyName(symbolUpper),
+      price_at_add: typeof price_at_add === 'number' ? price_at_add : undefined,
     });
 
     return NextResponse.json({ message: 'Stock added to watchlist', data: newItem });

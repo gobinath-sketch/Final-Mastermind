@@ -59,18 +59,20 @@ class StockService {
   private alphaVantageKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'ANEBEZ36W1G7OT61'
   private yahooFinanceKey = process.env.NEXT_PUBLIC_YAHOO_FINANCE_API_KEY || 'ef7994ada9mshe853dff7586d068p1b8839jsneb6865952289'
 
-  async getQuote(symbol: string): Promise<StockQuote> {
+  async getQuote(symbol: string): Promise<StockQuote | null> {
     try {
       const response = await fetch(`${this.baseUrl}/quote/${symbol}`)
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        return null
       }
 
-      return await response.json()
+      const payload = await response.json()
+      if (payload?.unavailable) return null
+      return payload as StockQuote
     } catch (error) {
-      console.error('Error fetching stock quote:', error)
-      throw new Error('Failed to fetch stock quote')
+      console.warn(`Quote unavailable for ${symbol}`, error)
+      return null
     }
   }
 
@@ -106,7 +108,12 @@ class StockService {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      return await response.json()
+      const payload = await response.json()
+      if (Array.isArray(payload)) return payload as StockChartData[]
+      if (payload && Array.isArray((payload as { data?: unknown }).data)) {
+        return (payload as { data: StockChartData[] }).data
+      }
+      return []
     } catch (error) {
       console.error('Error fetching chart data:', error)
       throw new Error('Failed to fetch chart data')

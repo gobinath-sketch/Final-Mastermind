@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || 'd2q2qjhr01qnf9nn8ti0d2q2qjhr01qnf9nn8tig'
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'ANEBEZ36W1G7OT61'
-const YAHOO_FINANCE_API_KEY = process.env.YAHOO_FINANCE_API_KEY || 'ef7994ada9mshe853dff7586d068p1b8839jsneb6865952289'
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || process.env.NEXT_PUBLIC_FINNHUB_API_KEY
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY
+const YAHOO_FINANCE_API_KEY = process.env.YAHOO_FINANCE_API_KEY || process.env.NEXT_PUBLIC_YAHOO_FINANCE_API_KEY
 
 interface StockQuote {
   symbol: string
@@ -23,6 +23,21 @@ interface StockQuote {
 
 async function getCompanyName(symbol: string): Promise<string> {
   try {
+    if (!FINNHUB_API_KEY) {
+      const companies: { [key: string]: string } = {
+        'AAPL': 'Apple Inc.',
+        'GOOGL': 'Alphabet Inc.',
+        'MSFT': 'Microsoft Corporation',
+        'AMZN': 'Amazon.com Inc.',
+        'TSLA': 'Tesla Inc.',
+        'META': 'Meta Platforms Inc.',
+        'NVDA': 'NVIDIA Corporation',
+        'NFLX': 'Netflix Inc.',
+        'AMD': 'Advanced Micro Devices Inc.',
+        'INTC': 'Intel Corporation'
+      }
+      return companies[symbol.toUpperCase()] || `${symbol} Corporation`
+    }
     const response = await fetch(
       `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${FINNHUB_API_KEY}`
     )
@@ -52,6 +67,7 @@ async function getCompanyName(symbol: string): Promise<string> {
 
 async function fetchQuoteFromFinnhub(symbol: string): Promise<StockQuote | null> {
   try {
+    if (!FINNHUB_API_KEY) return null
     const [quoteResponse, profileResponse] = await Promise.all([
       fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`),
       fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${FINNHUB_API_KEY}`)
@@ -90,6 +106,7 @@ async function fetchQuoteFromFinnhub(symbol: string): Promise<StockQuote | null>
 
 async function fetchQuoteFromAlphaVantage(symbol: string): Promise<StockQuote | null> {
   try {
+    if (!ALPHA_VANTAGE_API_KEY) return null
     const response = await fetch(
       `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
     )
@@ -129,6 +146,7 @@ async function fetchQuoteFromAlphaVantage(symbol: string): Promise<StockQuote | 
 
 async function fetchQuoteFromYahooFinance(symbol: string): Promise<StockQuote | null> {
   try {
+    if (!YAHOO_FINANCE_API_KEY) return null
     const response = await fetch(
       `https://yahoo-finance1.p.rapidapi.com/stock/v2/get-quotes?symbols=${symbol}`,
       {
@@ -197,37 +215,10 @@ export async function POST(request: NextRequest) {
           quote = await fetchQuoteFromYahooFinance(symbol)
         }
 
-        if (quote) {
-          quotes.push(quote)
-        } else {
-          // If all APIs fail, create a basic quote with mock data
-          console.log(`All APIs failed for ${symbol}, using fallback data`)
-          quotes.push({
-            symbol: symbol.toUpperCase(),
-            name: await getCompanyName(symbol),
-            price: Math.random() * 1000 + 50,
-            change: (Math.random() - 0.5) * 20,
-            changePercent: (Math.random() - 0.5) * 10,
-            volume: Math.floor(Math.random() * 10000000),
-            marketCap: Math.floor(Math.random() * 1000000000000),
-            high52Week: Math.random() * 1000 + 50,
-            low52Week: Math.random() * 1000 + 50
-          })
-        }
+        if (quote) quotes.push(quote)
       } catch (error) {
         console.error(`Error fetching quote for ${symbol}:`, error)
-        // Add fallback quote for this symbol
-        quotes.push({
-          symbol: symbol.toUpperCase(),
-          name: await getCompanyName(symbol),
-          price: Math.random() * 1000 + 50,
-          change: (Math.random() - 0.5) * 20,
-          changePercent: (Math.random() - 0.5) * 10,
-          volume: Math.floor(Math.random() * 10000000),
-          marketCap: Math.floor(Math.random() * 1000000000000),
-          high52Week: Math.random() * 1000 + 50,
-          low52Week: Math.random() * 1000 + 50
-        })
+        // No mock/fallback: simply omit symbols that failed.
       }
     }
 

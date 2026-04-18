@@ -15,12 +15,41 @@ export async function GET(request: NextRequest) {
         }
 
         const resumes = await Resume.find({ user_id: userPayload.userId })
-            .sort({ created_at: -1 });
+            .sort({ createdAt: -1 });
 
-        const formattedResumes = resumes.map(r => ({
-            ...r.toObject(),
-            id: r._id.toString()
-        }));
+        const formattedResumes = resumes.map((r) => {
+            const o = r.toObject() as Record<string, unknown>
+            const rawContent = o.content
+            const fromContent =
+                typeof rawContent === 'string'
+                    ? rawContent
+                    : rawContent &&
+                        typeof rawContent === 'object' &&
+                        'markdown' in rawContent &&
+                        typeof (rawContent as { markdown?: unknown }).markdown === 'string'
+                      ? (rawContent as { markdown: string }).markdown
+                      : ''
+            const markdown =
+                typeof o.content_markdown === 'string' && o.content_markdown.trim().length > 0
+                    ? o.content_markdown
+                    : fromContent
+            const createdSource = r.createdAt ?? o.created_at
+            const created_at =
+                createdSource instanceof Date
+                    ? createdSource.toISOString()
+                    : typeof createdSource === 'string'
+                      ? createdSource
+                      : new Date().toISOString()
+
+            return {
+                id: r._id.toString(),
+                title: r.title,
+                content_markdown: markdown,
+                version: typeof o.version === 'number' ? o.version : 1,
+                is_active: typeof o.is_active === 'boolean' ? o.is_active : true,
+                created_at,
+            }
+        });
 
         return NextResponse.json(formattedResumes);
 
@@ -52,28 +81,17 @@ export async function POST(request: NextRequest) {
         const newResume = await Resume.create({
             user_id: userPayload.userId,
             title,
-            content: content_markdown, // Mapping markdown to 'content' field which is Mixed/String
-            version,
-            is_active
+            content: content_markdown,
+            content_markdown,
+            version: version ?? 1,
+            is_active: is_active ?? true,
         });
-
-        // Note: Model has 'content', frontend sends 'content_markdown'. 
-        // We should standardise. Let's save it as content_markdown in DB to avoid confusion? 
-        // Or map it. Mongoose schema has `content: { type: Schema.Types.Mixed }`.
-        // Let's explicitly save `content_markdown` if that matches frontend expectation.
-        // I'll update the Resume model slightly in next step if needed, or just use flexible schema.
-
-        // Let's assume we want to store it as `content_markdown` since frontend expects it back.
-        // Update: I'll actually just update the Resume model to have `content_markdown` explicitly or use `content`.
-        // The frontend code I saw uses `content_markdown`.
-
-        // Quick fix: Update the document with specific field
-        await Resume.updateOne({ _id: newResume._id }, { content_markdown });
 
         return NextResponse.json({
             ...newResume.toObject(),
-            content_markdown,
-            id: newResume._id.toString()
+            content_markdown: newResume.content_markdown ?? content_markdown,
+            id: newResume._id.toString(),
+            created_at: newResume.createdAt?.toISOString() ?? new Date().toISOString(),
         });
 
     } catch (error) {
@@ -104,6 +122,7 @@ export async function PUT(request: NextRequest) {
             {
                 title,
                 content_markdown,
+                content: content_markdown,
                 version,
                 is_active
             },
@@ -116,7 +135,9 @@ export async function PUT(request: NextRequest) {
 
         return NextResponse.json({
             ...updated.toObject(),
-            id: updated._id.toString()
+            id: updated._id.toString(),
+            content_markdown: updated.content_markdown ?? content_markdown,
+            created_at: updated.createdAt?.toISOString(),
         });
 
     } catch (error) {

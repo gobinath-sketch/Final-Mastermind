@@ -91,7 +91,7 @@ button {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -143,7 +143,7 @@ button {
 
 .glass-card {
   width: 100%;
-  border-radius: 30px;
+  border-radius: 0 !important;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -151,4 +151,78 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Square UI: force all rounded corners to be square across the app. */
+[class*="rounded"] {
+  border-radius: 0 !important;
+}
+
+/* ATS Resume Preview (professional, print-like) */
+.ats-page {
+  width: 820px;
+  max-width: 100%;
+  min-height: 1050px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 44px 44px;
+  background: #ffffff;
+  color: #111111;
+  font-family: "Georgia", "Times New Roman", Times, serif;
+}
+
+.ats-name {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 1px;
+  font-size: 22px;
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+}
+
+.ats-contact {
+  text-align: center;
+  font-size: 10.5px;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+}
+
+.ats-rule {
+  height: 1px;
+  background: #5f5f5f;
+  margin: 12px 0 14px 0;
+}
+
+.ats-section {
+  background: #efefef;
+  padding: 4px 8px;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ats-subsection {
+  margin-top: 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.ats-paragraph {
+  font-size: 11px;
+  line-height: 1.35;
+  margin: 7px 0;
+}
+
+.ats-list {
+  margin: 6px 0 0 18px;
+  padding: 0;
+  list-style-type: disc;
+}
+
+.ats-list li {
+  font-size: 11px;
+  margin: 4px 0;
 }

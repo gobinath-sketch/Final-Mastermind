@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -31,6 +31,20 @@ export default function StocksPage() {
   const [searchResults, setSearchResults] = useState<StockQuote[]>([])
   const [loadingStocks, setLoadingStocks] = useState(false)
   const [loadingWatchlist, setLoadingWatchlist] = useState(false)
+  const watchlistSymbolsKey = watchlist.map((i) => i.symbol).sort().join(',')
+  // We memoize by symbol list only, so price refreshes don't recreate the interval dependencies.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const watchlistSymbols = useMemo(() => watchlist.map((i) => i.symbol), [watchlistSymbolsKey])
+
+  const getAddedAt = (item: WatchlistItem) => {
+    const maybe = item as unknown as {
+      addedAt?: string | Date
+      added_at?: string | Date
+      createdAt?: string | Date
+    }
+    const raw = maybe.addedAt ?? maybe.added_at ?? maybe.createdAt
+    return raw ? new Date(raw).toISOString() : new Date().toISOString()
+  }
 
   const loadWatchlist = useCallback(async () => {
     if (!user) return
@@ -38,13 +52,70 @@ export default function StocksPage() {
     setLoadingWatchlist(true)
     try {
       const watchlistData = await stockService.getWatchlist()
-      setWatchlist(watchlistData)
+      if (watchlistData.length === 0) {
+        setWatchlist([])
+        return
+      }
+
+      // Merge watchlist items with live quote data so price/change aren't 0.
+      const symbols = watchlistData.map((i) => i.symbol)
+      const quotes = await stockService.getMultipleQuotes(symbols)
+      const quoteMap = new Map(quotes.map((q) => [q.symbol, q]))
+
+      const merged: WatchlistItem[] = watchlistData.map((item) => {
+        const q = quoteMap.get(item.symbol)
+        return {
+          symbol: item.symbol,
+          name: q?.name ?? item.name,
+          price: q?.price ?? 0,
+          change: q?.change ?? 0,
+          changePercent: q?.changePercent ?? 0,
+          addedAt: getAddedAt(item),
+        }
+      })
+
+      setWatchlist(merged)
     } catch (error) {
       console.error('Error loading watchlist:', error)
     } finally {
       setLoadingWatchlist(false)
     }
   }, [user])
+
+  useEffect(() => {
+    if (!user) return
+    if (watchlistSymbols.length === 0) return
+
+    let cancelled = false
+    const id = setInterval(async () => {
+      try {
+        const quotes = await stockService.getMultipleQuotes(watchlistSymbols)
+        const quoteMap = new Map(quotes.map((q) => [q.symbol, q]))
+
+        if (cancelled) return
+        setWatchlist((prev) =>
+          prev.map((item) => {
+            const q = quoteMap.get(item.symbol)
+            if (!q) return item
+            return {
+              ...item,
+              name: q.name,
+              price: q.price,
+              change: q.change,
+              changePercent: q.changePercent,
+            }
+          })
+        )
+      } catch (e) {
+        console.error('Error refreshing watchlist quotes:', e)
+      }
+    }, 10000)
+
+    return () => {
+      cancelled = true
+      clearInterval(id)
+    }
+  }, [user, watchlistSymbolsKey, watchlistSymbols])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -60,9 +131,21 @@ export default function StocksPage() {
     setLoadingStocks(true)
     try {
       const results = await stockService.searchStocks(searchQuery)
+      const normalizedQuery = searchQuery.trim().toUpperCase()
+      const prioritized = results
+        .filter((result) => typeof result.symbol === 'string' && result.symbol.trim().length > 0)
+        .sort((a, b) => {
+          const aExact = a.symbol.toUpperCase() === normalizedQuery ? 1 : 0
+          const bExact = b.symbol.toUpperCase() === normalizedQuery ? 1 : 0
+          if (aExact !== bExact) return bExact - aExact
+          const aDot = a.symbol.includes('.') ? 1 : 0
+          const bDot = b.symbol.includes('.') ? 1 : 0
+          return aDot - bDot
+        })
+
       // Convert search results to quotes
       const quotes = await Promise.all(
-        results.slice(0, 5).map(async (result) => {
+        prioritized.slice(0, 8).map(async (result) => {
           try {
             return await stockService.getQuote(result.symbol)
           } catch {
@@ -274,6 +357,7 @@ export default function StocksPage() {
                           variant="outline"
                           size="sm"
                           className="flex-1 h-8 text-xs text-gray-300 border-gray-600 hover:border-sky-400 hover:bg-sky-400/10 transition-colors"
+                          onClick={() => router.push(`/dashboard/chart/${item.symbol}`)}
                         >
                           <BarChart3 className="h-3 w-3 mr-1" />
                           Chart
