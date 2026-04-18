@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -109,6 +108,13 @@ export default function SignupPage() {
         <div className="text-center space-y-1.5">
 
           <h1 className="text-3xl font-semibold text-white">Create your account</h1>
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            className="mt-2 inline-flex items-center border border-white/20 px-3 py-1.5 text-xs font-medium text-sky-300 hover:border-sky-400 hover:text-sky-200"
+          >
+            Back to Website
+          </button>
         </div>
 
         <Card className="w-full">

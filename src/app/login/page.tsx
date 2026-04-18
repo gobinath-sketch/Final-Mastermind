@@ -81,6 +81,13 @@ export default function LoginPage() {
         <div className="text-center space-y-1.5">
 
           <h1 className="text-3xl font-semibold text-white">Welcome back</h1>
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            className="mt-2 inline-flex items-center border border-white/20 px-3 py-1.5 text-xs font-medium text-sky-300 hover:border-sky-400 hover:text-sky-200"
+          >
+            Back to Website
+          </button>
         </div>
 
         <div className="w-full space-y-6">

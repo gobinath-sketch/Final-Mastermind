@@ -324,3 +324,19 @@ button {
     height: 280px !important;
   }
 }
+
+@keyframes landingTicker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.landing-ticker-track {
+  display: inline-block;
+  white-space: nowrap;
+  min-width: 200%;
+  animation: landingTicker 26s linear infinite;
+}
