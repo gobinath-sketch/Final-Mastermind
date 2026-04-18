@@ -24,7 +24,7 @@ const patrickHand = Patrick_Hand({
 });
 
 export const metadata: Metadata = {
-  title: "Sphinx - AI-Powered Career & Finance Platform",
+  title: "  Zeno-Sphinx",
   description: "Comprehensive platform combining job search, AI resume builder, stock dashboard, news feed, expense tracking, and intelligent chatbot",
   keywords: ["job search", "resume builder", "stock market", "AI", "career", "finance"],
   authors: [{ name: "Sphinx Team" }],

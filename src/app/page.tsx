@@ -86,7 +86,7 @@ export default function Home() {
         <header className="mb-8 flex items-center justify-between border border-[#1a4f32] bg-black/70 p-4">
           <div className="flex items-center gap-3">
             <div className="border border-[#39ff88] bg-black px-2 py-1 text-xs tracking-[0.25em] text-[#39ff88]">SPHINX</div>
-            <p className="text-xs text-[#93ffc4]">AI Career + Finance Intelligence</p>
+            
           </div>
         </header>
 
