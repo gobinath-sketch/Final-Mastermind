@@ -342,7 +342,7 @@ export default function DashboardPage() {
                     <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                         <div className="flex items-center gap-2">
                             <h1 className="text-2xl sm:text-3xl font-bold text-foreground font-display">
-                                Mastermind
+                                Zeno-Shinx
                             </h1>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -361,56 +361,48 @@ export default function DashboardPage() {
             </header>
 
             <main className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-10">
-                {/* Welcome Section */}
-                <div className="space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">
-                        Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}!
-                    </h2>
-
-                </div>
-
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6">
-                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
+                    <Card className="bg-secondary/60 border-[#1f7a4a] shadow-hand transition hover:-translate-y-1">
                         <CardContent className="p-5 flex items-center">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#FFD65C] to-[#FFC233] shadow-[3px_3px_0_#141414]">
-                                <Briefcase className="h-5 w-5 text-[#141414]" />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#39ff88] bg-[#0b2417] shadow-[0_0_18px_rgba(57,255,136,0.35)]">
+                                <Briefcase className="h-5 w-5 text-[#39ff88]" />
                             </div>
                             <div className="ml-3.5 overflow-hidden">
-                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Saved Jobs</p>
+                                <p className="text-[11.5px] font-bold text-[#9fffc8] truncate uppercase tracking-widest mb-0.5">Saved Jobs</p>
                                 <p className="text-xl font-bold text-foreground truncate leading-none">{summary.savedJobs}</p>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
+                    <Card className="bg-secondary/60 border-[#1f7a4a] shadow-hand transition hover:-translate-y-1">
                         <CardContent className="p-5 flex items-center">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#7EE7EB] via-[#4EC9D1] to-[#2A9DB0] shadow-[3px_3px_0_#141414]">
-                                <FileText className="h-5 w-5 text-[#141414]" />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#39ff88] bg-[#0b2417] shadow-[0_0_18px_rgba(57,255,136,0.35)]">
+                                <FileText className="h-5 w-5 text-[#39ff88]" />
                             </div>
                             <div className="ml-3.5 overflow-hidden">
-                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Resumes</p>
+                                <p className="text-[11.5px] font-bold text-[#9fffc8] truncate uppercase tracking-widest mb-0.5">Resumes</p>
                                 <p className="text-xl font-bold text-foreground truncate leading-none">{summary.resumes}</p>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
+                    <Card className="bg-secondary/60 border-[#1f7a4a] shadow-hand transition hover:-translate-y-1">
                         <CardContent className="p-5 flex items-center">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFEAB0] via-[#FFD86F] to-[#FFB347] shadow-[3px_3px_0_#141414]">
-                                <TrendingUp className="h-5 w-5 text-[#141414]" />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#39ff88] bg-[#0b2417] shadow-[0_0_18px_rgba(57,255,136,0.35)]">
+                                <TrendingUp className="h-5 w-5 text-[#39ff88]" />
                             </div>
                             <div className="ml-3.5 overflow-hidden">
-                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Watchlist</p>
+                                <p className="text-[11.5px] font-bold text-[#9fffc8] truncate uppercase tracking-widest mb-0.5">Watchlist</p>
                                 <p className="text-xl font-bold text-foreground truncate leading-none">{summary.watchlist}</p>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
+                    <Card className="bg-secondary/60 border-[#1f7a4a] shadow-hand transition hover:-translate-y-1">
                         <CardContent className="p-5 flex items-center">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#ADF0A5] to-[#6EE7B7] shadow-[3px_3px_0_#141414]">
-                                <CreditCard className="h-5 w-5 text-[#141414]" />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#39ff88] bg-[#0b2417] shadow-[0_0_18px_rgba(57,255,136,0.35)]">
+                                <CreditCard className="h-5 w-5 text-[#39ff88]" />
                             </div>
                             <div className="ml-3.5 overflow-hidden">
-                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Net Flow</p>
+                                <p className="text-[11.5px] font-bold text-[#9fffc8] truncate uppercase tracking-widest mb-0.5">Net Flow</p>
                                 <p className={`text-xl font-bold truncate leading-none ${netColor}`}>{formatCurrency(summary.net)}</p>
                             </div>
                         </CardContent>
@@ -522,24 +514,27 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {features.map((feature) => {
                         const Icon = feature.icon
                         return (
-                            <Card key={feature.title} className="group relative overflow-hidden bg-secondary/60 border-border p-6 hover:shadow-lg transition-all duration-300">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <Icon className="h-24 w-24" />
-                                </div>
-                                <div className="relative z-10 flex flex-col items-start gap-4">
-                                    <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} shadow-sm`}>
-                                        <Icon className="h-6 w-6 text-white" />
+                            <Card key={feature.title} className="group relative overflow-hidden bg-secondary/60 border-border p-3 hover:shadow-lg transition-all duration-300">
+                                <div className="relative z-10 flex items-center justify-between gap-3">
+                                    <div className="flex min-w-0 items-start gap-2.5">
+                                        <div className="mt-0.5 p-1.5 rounded-xl border border-[#39ff88] bg-[#0b2417] shadow-[0_0_18px_rgba(57,255,136,0.35)]">
+                                            <Icon className="h-4 w-4 text-[#39ff88]" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h3 className="text-base font-bold leading-tight mb-0.5">{feature.title}</h3>
+                                            <p className="text-xs text-muted-foreground line-clamp-1 leading-snug">{feature.description}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                                        <p className="text-muted-foreground">{feature.description}</p>
-                                    </div>
-                                    <Button size="sm" className={baseCtaButtonClasses} onClick={() => router.push(feature.href)}>
-                                        Get Started <ArrowRight className="h-4 w-4" />
+                                    <Button
+                                        size="sm"
+                                        className={`${baseCtaButtonClasses} h-7 shrink-0 px-3 py-0 text-[11px]`}
+                                        onClick={() => router.push(feature.href)}
+                                    >
+                                        Get Started <ArrowRight className="h-3.5 w-3.5" />
                                     </Button>
                                 </div>
                             </Card>

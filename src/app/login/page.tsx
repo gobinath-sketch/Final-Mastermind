@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, Suspense } from 'react'
+import { useCallback, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,7 @@ import { useToast } from '@/shared/hooks/use-toast'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import MatrixBackground from '@/components/MatrixBackground'
 
-function LoginContent() {
+export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -230,17 +230,5 @@ function LoginContent() {
         {/* Footer space for balance */}
       </div>
     </div >
-  )
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-sky-400 animate-pulse">Loading...</div>
-      </div>
-    }>
-      <LoginContent />
-    </Suspense>
   )
 }

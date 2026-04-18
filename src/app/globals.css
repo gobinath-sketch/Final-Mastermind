@@ -1,24 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  /* Modern Dark Theme */
+  /* Neon hacker theme */
   --background: #0a0a0a;
   --foreground: #ededed;
-  --primary: #a3ffce;
-  /* Matrix Green to match the rain */
+  --primary: #39ff88;
   --primary-foreground: #000000;
-  --secondary: #1a1a1a;
+  --secondary: #101010;
   --secondary-foreground: #ffffff;
-  --muted: #262626;
-  --muted-foreground: #a1a1a1;
-  --accent: #00b8a9;
-  --accent-foreground: #ffffff;
+  --muted: #151515;
+  --muted-foreground: #97b9a6;
+  --accent: #15d18b;
+  --accent-foreground: #00140a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #333333;
-  --input: #1a1a1a;
-  --ring: #a3ffce;
-  --card: #141414;
+  --border: #1c5737;
+  --input: #0e0e0e;
+  --ring: #39ff88;
+  --card: #0e0e0e;
   --card-foreground: #ededed;
   --radius: 1.25rem;
 }
@@ -54,6 +53,13 @@ body {
   font-family: var(--font-nunito), system-ui, sans-serif;
   min-height: 100vh;
   color-scheme: dark;
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(57, 255, 136, 0.08), transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(57, 255, 136, 0.06), transparent 40%),
+    linear-gradient(rgba(57, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 136, 0.03) 1px, transparent 1px);
+  background-size: auto, auto, 24px 24px, 24px 24px;
+  background-position: center, center, center, center;
 }
 
 h1,
@@ -78,6 +84,61 @@ a:hover {
 
 button {
   font-family: var(--font-patrick-hand), var(--font-nunito), system-ui, sans-serif;
+}
+
+/* Global neon shell for shadcn/tailwind UI elements */
+.bg-card,
+.bg-secondary\/60,
+.bg-secondary\/70,
+.bg-gray-900\/50,
+.bg-gray-900\/60,
+.bg-gray-900\/70 {
+  background-color: rgba(10, 10, 10, 0.86) !important;
+  border: 1px solid rgba(57, 255, 136, 0.22) !important;
+  box-shadow: 0 0 0 1px rgba(57, 255, 136, 0.08), 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+input,
+textarea,
+select,
+.bg-input {
+  background-color: rgba(8, 8, 8, 0.8) !important;
+  border-color: rgba(57, 255, 136, 0.28) !important;
+  color: #e9fff3 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(57, 255, 136, 0.25) !important;
+  border-color: rgba(57, 255, 136, 0.7) !important;
+}
+
+button,
+.bg-primary {
+  letter-spacing: 0.02em;
+}
+
+.bg-primary {
+  background-color: #39ff88 !important;
+  color: #00150a !important;
+  border-color: rgba(57, 255, 136, 0.65) !important;
+  text-shadow: none !important;
+}
+
+.text-primary {
+  color: #39ff88 !important;
+}
+
+.text-muted-foreground {
+  color: #9fcab4 !important;
+}
+
+header {
+  border-color: rgba(57, 255, 136, 0.22) !important;
+  background-color: rgba(10, 10, 10, 0.86) !important;
+  backdrop-filter: blur(8px);
 }
 
 /* Custom scrollbar - Dark Mode */
