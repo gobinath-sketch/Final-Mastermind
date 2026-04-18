@@ -281,7 +281,7 @@ export default function DashboardPage() {
 
     const handleSignOut = async () => {
         await signOut()
-        router.push('/login')
+        router.push('/')
     }
 
     if (loading) return null // or loading spinner
