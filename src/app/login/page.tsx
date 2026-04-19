@@ -1,25 +1,30 @@
 'use client'
 
-import { Suspense, useCallback, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useToast } from '@/shared/hooks/use-toast'
-import { Eye, EyeOff, Mail, Lock, Sparkles } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import MatrixBackground from '@/components/MatrixBackground'
 
-function LoginContent() {
+export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [oauthError, setOauthError] = useState<string | null>(null)
   const { signIn } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const oauthError = searchParams.get('error')
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    setOauthError(params.get('error'))
+  }, [])
 
   const oauthErrorMessages: Record<string, string> = {
     google_denied: 'Google sign-in was cancelled.',
@@ -230,22 +235,5 @@ function LoginContent() {
         {/* Footer space for balance */}
       </div>
     </div >
-  )
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-center">
-            <Sparkles className="h-10 w-10 text-sky-400 animate-pulse mx-auto mb-3" />
-            <p className="text-gray-400">Loading login...</p>
-          </div>
-        </div>
-      }
-    >
-      <LoginContent />
-    </Suspense>
   )
 }
