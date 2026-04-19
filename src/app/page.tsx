@@ -84,9 +84,8 @@ export default function Home() {
 
       <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 pb-16 pt-8 sm:px-6 lg:px-8">
         <header className="mb-8 flex items-center justify-between border border-[#1a4f32] bg-black/70 p-4">
-          <div className="flex items-center gap-3">
-            <div className="border border-[#39ff88] bg-black px-2 py-1 text-xs tracking-[0.25em] text-[#39ff88]">SPHINX</div>
-            <p className="text-xs text-[#93ffc4]">AI Career + Finance Intelligence</p>
+          <div className="border border-[#39ff88] bg-black px-2 py-1 text-xs font-semibold tracking-[0.12em] text-[#39ff88]">
+            Zeno-Sphinx
           </div>
         </header>
 
@@ -172,21 +171,11 @@ export default function Home() {
           })}
         </section>
 
-        <section className="mt-8 grid gap-4 border border-[#1a4f32] bg-black/70 p-6 sm:grid-cols-3">
-          <div>
-            <p className="mb-2 text-sm font-semibold text-[#d9ffea]">Animated Interface</p>
-            <p className="text-xs text-[#9fd8b8]">Matrix rain background, neon cards, ticker movement, and live signal-style visual flow.</p>
-          </div>
-          <div>
-            <p className="mb-2 text-sm font-semibold text-[#d9ffea]">Connected Flow</p>
-            <p className="text-xs text-[#9fd8b8]">`Get Started` opens signup, `Sign In` opens login, and authenticated users auto-enter dashboard.</p>
-          </div>
-          <div>
-            <p className="mb-2 text-sm font-semibold text-[#d9ffea]">Contact</p>
-            <a href="https://github.com/gobinath-sketch" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-[#39ff88] px-3 py-2 text-xs text-[#b8ffd9] hover:bg-[#0d2e1e]">
-              <Zap className="h-3.5 w-3.5" /> GitHub Profile
-            </a>
-          </div>
+        <section className="mt-8 border border-[#1a4f32] bg-black/70 p-6">
+          <p className="mb-2 text-sm font-semibold text-[#d9ffea]">Contact</p>
+          <a href="https://github.com/gobinath-sketch" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-[#39ff88] px-3 py-2 text-xs text-[#b8ffd9] hover:bg-[#0d2e1e]">
+            <Zap className="h-3.5 w-3.5" /> GitHub Profile
+          </a>
         </section>
       </main>
     </div>
