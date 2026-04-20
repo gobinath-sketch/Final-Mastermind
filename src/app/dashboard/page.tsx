@@ -341,7 +341,7 @@ export default function DashboardPage() {
                     <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                         <div className="flex items-center gap-2">
                             <h1 className="text-2xl sm:text-3xl font-bold text-foreground font-display">
-                                Zeno-Shinx
+                                Zeno-Sphinx
                             </h1>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
